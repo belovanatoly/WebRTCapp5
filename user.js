@@ -55,7 +55,7 @@ if(!RTCPeerConnection) {console.log ('Your browser doesn\'t support WebRTC');}
 function getUserMedia_click(){
 	document.getElementById('logs').innerHTML="getUserMedia is clicked";
 	PeerConnection();
-	getUserMedia();
+	getMedia();
 }
 
 
@@ -95,7 +95,7 @@ if (pc) {
 	else console.log('error: pc is not created. please creat pc.');
 }
 
-function getUserMedia(){
+function getMedia(){
 	navigator.getUserMedia(mediaConstraints,
 		function (stream)
 		{
