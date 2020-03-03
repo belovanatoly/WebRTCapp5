@@ -53,7 +53,7 @@ if(!RTCPeerConnection) {console.log ('Your browser doesn\'t support WebRTC');}
 function getUserMedia_click(){
 	document.getElementById('logs').innerHTML="getUserMedia is clicked";
 	PeerConnection();
-	getUserMedia();
+	getMedia();
 }
 
 
@@ -94,8 +94,25 @@ if (pc) {
 	else console.log('error: pc is not created. please creat pc.');
 }
 
-function getUserMedia(){
+function getMedia(){
+	
+var constraints = { video: true, audio: true };
+			video = document.getElementById('localVideo');
+			video.autoplay = true;
+   			video.muted = true;
 
+
+navigator.mediaDevices.getUserMedia(constraints)
+  .then(stream => video.srcObject = stream)
+  .catch(e => console.error(e));
+
+/*
+video.onloadedmetadata = function(e) {
+  video.play();
+};
+
+
+/*
 navigator.mediaDevices.getUserMedia(mediaConstraints)
 .then(function(stream) {
 			console.log("MediaStream is created");
@@ -122,7 +139,7 @@ navigator.mediaDevices.getUserMedia(mediaConstraints)
 .catch(function(err) {
 			console.error(err);
 });
-
+*/
 
 
 /*
