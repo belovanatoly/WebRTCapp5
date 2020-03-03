@@ -50,13 +50,12 @@ RTCIceCandidate = (
 
 if(!RTCPeerConnection) {console.log ('Your browser doesn\'t support WebRTC');}
 
-
-
 function getUserMedia_click(){
 	document.getElementById('logs').innerHTML="getUserMedia is clicked";
 	PeerConnection();
 	getUserMedia();
 }
+
 
 
 function PeerConnection(){
@@ -96,6 +95,37 @@ if (pc) {
 }
 
 function getUserMedia(){
+
+navigator.mediaDevices.getUserMedia(mediaConstraints)
+.then(function(stream) {
+			console.log("MediaStream is created");
+			console.log(stream);
+			
+			video = document.getElementById('localVideo');
+			video.srcObject = stream; 
+			video.autoplay = true;
+   			video.muted = true;
+
+			localStream = stream;
+			//console.log(stream.getTracks()[0]);
+			//console.log(stream.getTracks()[1]);
+			//console.log(stream.getAudioTracks()[0]);
+			//console.log(stream.getVideoTracks()[0]);
+			pc.addStream(stream);
+			//localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+		
+				console.log("MediaStream is added");
+				logs = document.getElementById('logs');
+				logs.innerHTML="MediaStream is added";
+  
+})
+.catch(function(err) {
+			console.error(err);
+});
+
+
+
+/*
 	navigator.getUserMedia(mediaConstraints,
 		function (stream)
 		{
@@ -124,6 +154,7 @@ function getUserMedia(){
 			console.error(err);
 		}
 	);
+*/	
 }
 
 
