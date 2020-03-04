@@ -4,21 +4,21 @@ console.log("begin");
 var socket = io.connect();
 
 var mediaConstraints = {
-  audio: true, // We want an audio track
-  video: true // ...and we want a video track
+  audio: true, 
+  video: true 
 };
 
 var localStream = null;
 var pc = null;
-var servers = null;
+//var servers = null;
 
-/*
+
 var servers = {"iceServers": 
 	    [
             {"url": "stun:stun.l.google.com:19302"}
 	    ]
         };
-*/
+
 		
 navigator.getUserMedia = (
 	navigator.getUserMedia ||
@@ -50,12 +50,13 @@ RTCIceCandidate = (
 
 if(!RTCPeerConnection) {console.log ('Your browser doesn\'t support WebRTC');}
 
+
+
 function getUserMedia_click(){
 	document.getElementById('logs').innerHTML="getUserMedia is clicked";
 	PeerConnection();
-	getMedia();
+	getUserMedia();
 }
-
 
 
 function PeerConnection(){
@@ -94,55 +95,7 @@ if (pc) {
 	else console.log('error: pc is not created. please creat pc.');
 }
 
-function getMedia(){
-	
-var constraints = { video: true, audio: true };
-			video = document.getElementById('localVideo');
-			video.autoplay = true;
-   			video.muted = true;
-
-
-navigator.mediaDevices.getUserMedia(constraints)
-  .then(stream => video.srcObject = stream)
-  .catch(e => console.error(e));
-
-/*
-video.onloadedmetadata = function(e) {
-  video.play();
-};
-
-
-/*
-navigator.mediaDevices.getUserMedia(mediaConstraints)
-.then(function(stream) {
-			console.log("MediaStream is created");
-			console.log(stream);
-			
-			video = document.getElementById('localVideo');
-			video.srcObject = stream; 
-			video.autoplay = true;
-   			video.muted = true;
-
-			localStream = stream;
-			//console.log(stream.getTracks()[0]);
-			//console.log(stream.getTracks()[1]);
-			//console.log(stream.getAudioTracks()[0]);
-			//console.log(stream.getVideoTracks()[0]);
-			pc.addStream(stream);
-			//localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
-		
-				console.log("MediaStream is added");
-				logs = document.getElementById('logs');
-				logs.innerHTML="MediaStream is added";
-  
-})
-.catch(function(err) {
-			console.error(err);
-});
-*/
-
-
-/*
+function getUserMedia(){
 	navigator.getUserMedia(mediaConstraints,
 		function (stream)
 		{
@@ -171,7 +124,6 @@ navigator.mediaDevices.getUserMedia(mediaConstraints)
 			console.error(err);
 		}
 	);
-*/	
 }
 
 
