@@ -12,13 +12,13 @@ var localStream = null;
 var pc = null;
 var servers = null;
 
-/*
+
 var servers = {"iceServers": 
 	    [
             {"url": "stun:stun.l.google.com:19302"}
 	    ]
         };
-*/
+
 		
 navigator.getUserMedia = (
 	navigator.getUserMedia ||
