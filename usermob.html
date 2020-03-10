@@ -115,7 +115,7 @@ if (pc) {
 			console.log(e.candidate);
 			if (e.candidate) {document.getElementById('debug').innerHTML += "ICE candidate: " + e.candidate.candidate + '<br>';}
 				else {document.getElementById('debug').innerHTML += "ICE candidate: null<br>";}
-			//socket.emit("message", {type: "candidate", candidate: e.candidate});
+			socket.emit("message", {type: "candidate", candidate: e.candidate});
 			};
 	
 	} else document.getElementById('debug').innerHTML += "pc is not created<br>";
@@ -137,7 +137,7 @@ if (pc)	{
 				console.log(desc);
 				document.getElementById('debug').innerHTML += "setLocalDescription<br>";
 				document.getElementById('debug').innerHTML += desc.type + "<br>";
-				//socket.emit("message", desc);
+				socket.emit("message", desc);
 			},
 			function(err)
 			{
@@ -159,6 +159,21 @@ socket.on('success', function ()
 	console.log("socket.on connected");
 	document.getElementById('debug').innerHTML += "socket.on connected<br>";
 });
+	  
+	if (message.type == "answer")
+	{
+		if (pc){
+			pc.setRemoteDescription(new RTCSessionDescription(message));
+			console.log('setRemoteDescription');
+			console.log(message);
+			document.getElementById('logs').innerHTML="Aswer is received";
+			document.getElementById('debug').innerHTML += "Aswer is received<br>";
+			document.getElementById('debug').innerHTML += "setRemoteDescription<br>";
+
+
+			}
+	}
+	  
 	  
 socket.on('error', function(err)
 {
