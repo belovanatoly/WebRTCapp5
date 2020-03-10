@@ -159,7 +159,8 @@ if (pc)	{
 				console.log(desc);
 				document.getElementById('debug').innerHTML += "setLocalDescription<br>";
 				//document.getElementById('debug').innerHTML += desc.type + "<br>";
-				socket.emit("message", {type: 'offer'; sdp: desc});
+				socket.emit("message", desc);
+				//socket.emit("message", {type: 'offer'; sdp: desc});
 			},
 			function(err)
 			{
@@ -197,7 +198,7 @@ socket.on('message', function(message)
 			document.getElementById('logs').innerHTML="Aswer is received";
 			document.getElementById('debug').innerHTML += "Aswer is received<br>";
 			document.getElementById('debug').innerHTML += "setRemoteDescription<br>";
-			document.getElementById('debug').innerHTML += message + "<br>";
+			//document.getElementById('debug').innerHTML += message + "<br>";
 
 			}
 	}
