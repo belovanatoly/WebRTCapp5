@@ -113,10 +113,14 @@ if (pc) {
 ///////////////////
 function createOffer_click(){	
 	document.getElementById('logs').innerHTML = "createOffer is clicked";
-	document.getElementById('debud').innerHTML += "createOffer is clicked<br>";
-/*
+	document.getElementById('debug').innerHTML += "createOffer is clicked<br>";
+
 	if (pc)	{
-		document.getElementById('logs').innerHTML="Offer is sended";
+		document.getElementById('logs').innerHTML="Offer is sending";
+		document.getElementById('debug).innerHTML +="Offer is sending<br>";
+		}
+		else console.log('Error: pc is not created. please creat pc.');	
+/*		
 		pc.createOffer(
 			function(desc)
 			{
@@ -134,8 +138,7 @@ function createOffer_click(){
 				document.getElementById('debug').innerHTML += err + "<br>";
 			}
 		);
-		}
-		else console.log('Error: pc is not created. please creat pc.');
+
 */
 }	  
 ///////////////////	  
