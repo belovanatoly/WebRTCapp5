@@ -90,7 +90,7 @@ function getUserMedia(){
 
 
 function newPeerConnection_click(){
-	document.getElementById('logs').innerHTML += "newPeerConnection is clicked<br>";
+	document.getElementById('logs').innerHTML = "newPeerConnection is clicked<br>";
 
 pc = new RTCPeerConnection(servers);
 if (pc) {
@@ -144,6 +144,7 @@ if (pc) {
 
 
 function createOffer_click(){	
+	document.getElementById('logs').innerHTML = "createOffer is clicked<br>";
 if (pc)	{
 		document.getElementById('logs').innerHTML="Offer is sended";
 		pc.createOffer(
