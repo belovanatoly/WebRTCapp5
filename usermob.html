@@ -28,7 +28,7 @@
   <div id='debug'><br>Console:<br></div>
  
   <script type="text/javascript">
-    var begin = 'begin 17';
+    var begin = 'begin 18';
     
     var socket = io.connect();
     var streamConstraints = { "audio": false, "video": true };
@@ -97,9 +97,15 @@ if (pc) {
 		//localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
 			
 		console.log("MediaStream is added");
-		document.getElementById('debug').innerHTML += "MediaStream is added<br>";	
+		document.getElementById('debug').innerHTML += "MediaStream is added<br>";		
 	
-	
+		pc.onicecandidate = function (e){
+			console.log("ICE candidate:");
+			console.log(e.candidate);
+			if (e.candidate) {document.getElementById('debug').innerHTML += "ICE candidate: " + e.candidate.candidate + '<br>';}
+				else {document.getElementById('debug').innerHTML += "ICE candidate: null<br>";}
+			socket.emit("message", {type: "candidate", candidate: e.candidate});
+			};
 	
 	} else document.getElementById('debug').innerHTML += "pc is not created<br>";
 	
@@ -109,6 +115,14 @@ socket.on('success', function ()
 {
 	console.log("socket.on connected");
 	document.getElementById('debug').innerHTML += "socket.on connected<br>";
+});
+	  
+socket.on('error', function(err)
+{
+	console.log("Error!");
+	console.error(err);
+	document.getElementById('debug').innerHTML += "Error!<br>" + err + '<br>';
+
 });
 
   </script>
