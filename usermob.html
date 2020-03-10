@@ -27,6 +27,8 @@
   <div id='debug'><br>Console:<br></div>
  
   <script type="text/javascript">
+    var streamConstraints = { "audio": false, "video": true };
+    
     console.log('begin 3');
     document.getElementById('debug').innerHTML += 'begin 3<br>'; 
   
@@ -48,11 +50,7 @@ document.getElementById('debug').innerHTML += error;
 function getUserMedia_click() {
   console.log("getUserMedia_click()");
   document.getElementById('debug').innerHTML += 'getUserMedia_click<br>';
-  navigator.getUserMedia(
-    streamConstraints,
-    getUserMedia_success,
-    getUserMedia_error
-  );
+  navigator.getUserMedia(streamConstraints, getUserMedia_success, getUserMedia_error);
 }
 
   </script>
