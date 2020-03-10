@@ -1,57 +1,31 @@
 // JavaScript Document
 
-console.log("begin");
-
-var mediaConstraints = {
-  audio: true, 
-  video: true 
-};
-
 var localStream = null;
-var pc = null;
-//var servers = null;
+var streamConstraints = { "audio": false, "video": true };
+var pc1;
+var pc2;
+var servers = null;
 
+var PeerConnection = window.mozRTCPeerConnection || window.webkitRTCPeerConnection  || RTCPeerConnection;
+if(!PeerConnection) throw 'Your browser doesn\'t support WebRTC';
+//var IceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate || ;
+var SessionDescription = window.mozRTCSessionDescription || window.RTCSessionDescription;
 
-var servers = {"iceServers": 
-	    [
-            {"url": "stun:stun.l.google.com:19302"}
-	    ]
-        };
+document.getElementById('debug').innerHTML += 'begin';
 
-		
-navigator.getUserMedia = (
-	navigator.getUserMedia ||
-	navigator.webkitGetUserMedia ||
-	navigator.mozGetUserMedia ||
-	navigator.msGetUserMedia
-);
+navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
-RTCPeerConnection = (
-	RTCPeerConnection ||
-	webkitRTCPeerConnection ||
-	mozRTCPeerConnection ||
-	msRTCPeerConnection
-);
+function getUserMedia_success(stream) {
+  console.log("getUserMedia_success():", stream);
+  localVideo.src = URL.createObjectURL(stream); // Подключаем медиапоток к HTML-элементу <video>
+//  localVideo.srcObject = stream;
+  localStream = stream; // и сохраняем в глобальной переменной для дальнейшего использования
+}
 
-RTCSessionDescription = (
-	RTCSessionDescription ||
-	webkitRTCSessionDescription ||
-	mozRTCSessionDescription ||
-	msRTCSessionDescription
-);
-
-RTCIceCandidate = (
-	RTCIceCandidate ||
-	webkitRTCIceCandidate ||
-	mozRTCIceCandidate ||
-	msRTCIceCandidate
-);
-
-if(!RTCPeerConnection) {
-	console.log ('Your browser doesn\'t support WebRTC');
-	document.getElementById('debug').innerHTML += "Your browser does not support WebRTC<br>";
-
-	}
+function getUserMedia_error(error) {
+  console.log("getUserMedia_error():", error);
+document.getElementById('debug').innerHTML += error;
+}
 
 function getUserMedia_click() {
 document.getElementById('debug').innerHTML += 'getUserMedia_click<br>';
@@ -62,19 +36,5 @@ document.getElementById('debug').innerHTML += 'getUserMedia_click<br>';
     getUserMedia_error
   );
 }
-
-function getUserMedia_success(stream) {
-  console.log("getUserMedia_success():", stream);
-  localVideo.src = URL.createObjectURL(stream); // Подключаем медиапоток к HTML-элементу <video>
-//  localVideo1.srcObject = stream;
-  localStream = stream; // и сохраняем в глобальной переменной для дальнейшего использования
-}
-
-function getUserMedia_error(error) {
-  console.log("getUserMedia_error():", error);
-document.getElementById('debug').innerHTML += error;
-}
-
-
 ///////////////////
 
