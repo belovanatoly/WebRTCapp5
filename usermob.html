@@ -156,8 +156,12 @@ function getUserMedia(){
 			console.log(stream);
 			document.getElementById('debug').innerHTML += 'MediaStream is created<br>';
 
+			if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
+			document.getElementById('debug').innerHTML += 'Android<br>';	
+				localVideo1.src = URL.createObjectURL(stream);} 
+					else {video = document.getElementById('localVideo');}
+		
 			
-			video = document.getElementById('localVideo');
 			video.srcObject = stream; 
 			video.autoplay = true;
    			video.muted = true;
