@@ -20,25 +20,34 @@
   <button id="btn_AudioOn" onclick="AudioOn_click()">AudioOn</button>
   <button id="btn_AudioOff" onclick="AudioOff_click()">AudioOff</button>
   <br>
-  <video id="localVideo" autoplay></video>
+  <video id="localVideo"></video>
   <video id="remoteVideo"></video>
   <div id='logs'>&nbsp;</div>
   <div id='connection'>&nbsp;</div>
   <div id='debug'><br>Console:<br></div>
  
   <script type="text/javascript">
+    var begin = 'begin 5'
     var streamConstraints = { "audio": false, "video": true };
     
-    console.log('begin 4');
-    document.getElementById('debug').innerHTML += 'begin 4<br>'; 
+    console.log(begin);
+    document.getElementById('debug').innerHTML += begin + '<br>'; 
   
     navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
+  function getUserMedia_click() {
+  console.log("getUserMedia_click()");
+  document.getElementById('debug').innerHTML += 'getUserMedia_click<br>';
+  
+  navigator.getUserMedia(streamConstraints, getUserMedia_success, getUserMedia_error);
+}
+    
 function getUserMedia_success(stream) {
- // console.log("getUserMedia_success():", stream);
   document.getElementById('debug').innerHTML += 'getUserMedia_success<br>';
- localVideo.src = URL.createObjectURL(stream); // Подключаем медиапоток к HTML-элементу <video>
+  localVideo.src = URL.createObjectURL(stream); // Подключаем медиапоток к HTML-элементу <video>
 //  localVideo1.srcObject = stream;
+  localVideo.autoplay = true;
+  localVideo.muted = true;
 //  localStream = stream; // и сохраняем в глобальной переменной для дальнейшего использования
 }
 
@@ -47,11 +56,7 @@ function getUserMedia_error(error) {
 document.getElementById('debug').innerHTML += error;
 }
 
-function getUserMedia_click() {
-  console.log("getUserMedia_click()");
-  document.getElementById('debug').innerHTML += 'getUserMedia_click<br>';
-  navigator.getUserMedia(streamConstraints, getUserMedia_success, getUserMedia_error);
-}
+
 
   </script>
 
