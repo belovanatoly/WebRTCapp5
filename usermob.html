@@ -28,7 +28,7 @@
   <div id='debug'><br>Console:<br></div>
  
   <script type="text/javascript">
-    var begin = 'begin 7'
+    var begin = 'begin 8'
     
     var socket = io.connect();
     var streamConstraints = { "audio": false, "video": true };
@@ -38,8 +38,16 @@
     console.log(begin);
     document.getElementById('debug').innerHTML += begin + '<br>'; 
   
-navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-    
+//navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+	  
+navigator.getUserMedia = (
+	navigator.getUserMedia ||
+	navigator.webkitGetUserMedia ||
+	navigator.mozGetUserMedia ||
+	navigator.msGetUserMedia
+);
+	  
+	  
   function getUserMedia_click() {
   console.log("getUserMedia_click()");
   document.getElementById('debug').innerHTML += 'getUserMedia_click<br>';
