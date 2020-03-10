@@ -160,7 +160,7 @@ if (pc)	{
 				document.getElementById('debug').innerHTML += "setLocalDescription<br>";
 				//document.getElementById('debug').innerHTML += desc.type + "<br>";
 				//socket.emit("message", desc);
-				socket.emit("message", {type: 'offer'; sdp: desc});
+				socket.emit("message", {type: 'offer', sdp: desc});
 			},
 			function(err)
 			{
