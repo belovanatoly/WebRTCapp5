@@ -129,7 +129,11 @@ if (pc) {
 		var video = document.getElementById('remoteVideo');
 		video.autoplay = true;
 		video.muted = true;
-		video.srcObject = e.stream; 
+		 
+				if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
+			document.getElementById('debug').innerHTML += 'Android<br>';	
+				video.src = URL.createObjectURL(e.stream);} 
+					else {video.srcObject = e.stream;}		
 		};
 
 		pc.oniceconnectionstatechange = function (e)
