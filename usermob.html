@@ -28,11 +28,12 @@
   <div id='debug'><br>Console:<br></div>
  
   <script type="text/javascript">
-    var begin = 'begin 8'
+    var begin = 'begin 9'
     
     var socket = io.connect();
     var streamConstraints = { "audio": false, "video": true };
-	  
+var pc = null;
+var servers = null;	  
 
 	  
     console.log(begin);
@@ -45,6 +46,13 @@ navigator.getUserMedia = (
 	navigator.webkitGetUserMedia ||
 	navigator.mozGetUserMedia ||
 	navigator.msGetUserMedia
+);
+	  
+RTCPeerConnection = (
+	RTCPeerConnection ||
+	webkitRTCPeerConnection ||
+	mozRTCPeerConnection ||
+	msRTCPeerConnection
 );
 	  
 	  
