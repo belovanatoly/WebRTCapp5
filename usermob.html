@@ -28,7 +28,7 @@
   <div id='debug'><br>Console:<br></div>
  
   <script type="text/javascript">
-    var begin = 'begin 15';
+    var begin = 'begin 16';
     
     var socket = io.connect();
     var streamConstraints = { "audio": false, "video": true };
@@ -59,14 +59,10 @@ var RTCPeerConnection = (
 	  if(!RTCPeerConnection) {document.getElementById('debug').innerHTML += 'Your browser does not support WebRTC<br>';}
 	  else {document.getElementById('debug').innerHTML += 'Your browser supports WebRTC<br>';}
 
-	  
-pc = new RTCPeerConnection(servers);
-	    console.log('pc: ' + pc.iceConnectionState);
-	    document.getElementById('debug').innerHTML += pc.iceConnectionState + '<br>';
-	  
   function getUserMedia_click() {
   console.log("getUserMedia_click()");
-  document.getElementById('debug').innerHTML += 'getUserMedia_click<br>';
+  document.getElementById('logs').innerHTML = 'getUserMedia is clicked';
+  document.getElementById('debug').innerHTML += 'getUserMedia is clicked<br>';
   
   navigator.getUserMedia(streamConstraints, getUserMedia_success, getUserMedia_error);
 }
@@ -74,7 +70,7 @@ pc = new RTCPeerConnection(servers);
 function getUserMedia_success(stream) {
   document.getElementById('debug').innerHTML += 'getUserMedia_success<br>';
   localVideo.src = URL.createObjectURL(stream); // Подключаем медиапоток к HTML-элементу <video>
-//  localVideo1.srcObject = stream;
+//  localVideo.srcObject = stream;
   localVideo.autoplay = true;
   localVideo.muted = true;
 //  localStream = stream; // и сохраняем в глобальной переменной для дальнейшего использования
@@ -87,9 +83,10 @@ document.getElementById('debug').innerHTML += error;
 ///////////////////
 	  
 function newPeerConnection_click(){
-	document.getElementById('logs').innerHTML = "newPeerConnection is clicked<br>";
-
-
+	document.getElementById('logs').innerHTML = "newPeerConnection is clicked";
+	document.getElementById('debug').innerHTML += "newPeerConnection is clicked<br>";
+	
+pc = new RTCPeerConnection(servers);
 if (pc) {
 	console.log('pc is created');
 	document.getElementById('debug').innerHTML += "pc is created<br>";
