@@ -132,7 +132,7 @@ if (pc) {
 		 
 				if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
 			document.getElementById('debug').innerHTML += 'Android<br>';	
-				document.getElementById('remoteVideo').src = URL.createObjectURL(e.stream);
+				video.src = URL.createObjectURL(e.stream);
 				//document.getElementById('remoteVideo').srcObject = e.stream;
 				} 
 					else {video.srcObject = e.stream;}		
@@ -169,7 +169,7 @@ function getUserMedia(){
 		
 			if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
 			document.getElementById('debug').innerHTML += 'Android<br>';	
-				document.getElementById('localVideo').src = URL.createObjectURL(stream);
+				video.src = URL.createObjectURL(stream);
 				//document.getElementById('localVideo').srcObject = stream;				
 				} 
 					else {video.srcObject = stream;}
