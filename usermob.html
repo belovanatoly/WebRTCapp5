@@ -29,7 +29,7 @@
   <div id='debug'><br>Console:<br></div>
  
   <script type="text/javascript">
-    var begin = 'begin 19';
+    var begin = 'begin 20';
     
     var socket = io.connect();
     var streamConstraints = { "audio": false, "video": true };
@@ -173,13 +173,12 @@ socket.on('success', function ()
 	console.log("socket.on connected");
 	document.getElementById('debug').innerHTML += "socket.on connected<br>";
 });
-	  
+
+
 socket.on('message', function(message)
 {
 	console.log("Message from server:");
-	console.log(message);	
-	document.getElementById('debug').innerHTML += "Message from server:<br>";
-	document.getElementById('debug').innerHTML += "message<br>";
+	console.log(message);
 	if (message.type == "answer")
 	{
 		if (pc){
@@ -193,7 +192,43 @@ socket.on('message', function(message)
 
 			}
 	}
-	  
+	
+	if (message.type == "offer")
+	{
+			console.log('Offer is received:');
+			document.getElementById('logs').innerHTML="Offer is received";
+			document.getElementById('debug').innerHTML += "Offer is received<br>";
+
+			console.log(message);
+			if(pc){
+				pc.setRemoteDescription(new RTCSessionDescription(message));
+				console.log('setRemoteDescription');
+				console.log(message);
+				document.getElementById('debug').innerHTML += "setRemoteDescription<br>";
+
+				console.log('createAnswer');
+				document.getElementById('debug').innerHTML += "createAnswer<br>";
+
+				pc.createAnswer
+				(function(desc)
+				{
+					pc.setLocalDescription(desc)
+					console.log('setLocalDescription');
+					console.log(desc);
+					document.getElementById('debug').innerHTML += "setLocalDescription<br>";
+					socket.emit("message", desc);
+					document.getElementById('logs').innerHTML="Answer is sended";
+
+				}, 
+				function(err)
+				{
+					console.error(err);
+					document.getElementById('debug').innerHTML += err+ "<br>";
+				}
+			);
+			}
+	}
+
 	if (message.type == "candidate")
 	{
 			if (message.candidate)
@@ -207,8 +242,11 @@ socket.on('message', function(message)
 					document.getElementById('debug').innerHTML += "new IceCandidate is added<br>";
 					}
 			}
-	}	  
-}	  
+	}
+	
+});
+
+
 socket.on('error', function(err)
 {
 	console.log("Error!");
@@ -216,6 +254,8 @@ socket.on('error', function(err)
 	document.getElementById('debug').innerHTML += "Error!<br>" + err + '<br>';
 
 });
+
+
 
   </script>
 
