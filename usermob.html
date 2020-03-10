@@ -98,7 +98,7 @@ if (pc) {
 			
 		console.log("MediaStream is added");
 		document.getElementById('debug').innerHTML += "MediaStream is added<br>";		
-	
+	/*
 		pc.onicecandidate = function (e){
 			console.log("ICE candidate:");
 			console.log(e.candidate);
@@ -106,7 +106,7 @@ if (pc) {
 				else {document.getElementById('debug').innerHTML += "ICE candidate: null<br>";}
 			socket.emit("message", {type: "candidate", candidate: e.candidate});
 			};
-	
+	*/
 	} else document.getElementById('debug').innerHTML += "pc is not created<br>";
 	
 }    
@@ -116,6 +116,23 @@ function createOffer_click(){
 	document.getElementById('debug').innerHTML += "createOffer is clicked<br>";
 if (pc)	{
 		document.getElementById('debug').innerHTML += "Offer is sending<br>";
+		pc.createOffer(
+			function(desc)
+			{
+				console.log('createOffer');
+				document.getElementById('debug').innerHTML += "createOffer<br>";
+				pc.setLocalDescription(desc);
+				console.log('setLocalDescription');
+				console.log(desc);
+				document.getElementById('debug').innerHTML += "setLocalDescription<br>";
+				//socket.emit("message", desc);
+			},
+			function(err)
+			{
+				console.error(err);
+				document.getElementById('debug').innerHTML += err + "<br>";
+			}
+		);
 	
 		} else {
 			console.log('Error: pc is not created');
