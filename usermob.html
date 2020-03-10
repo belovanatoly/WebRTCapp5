@@ -28,7 +28,7 @@
   <div id='debug'><br>Console:<br></div>
  
   <script type="text/javascript">
-    var begin = 'begin 18';
+    var begin = 'begin 19';
     
     var socket = io.connect();
     var streamConstraints = { "audio": false, "video": true };
@@ -111,6 +111,33 @@ if (pc) {
 	
 }    
 ///////////////////
+function createOffer_click(){	
+	document.getElementById('logs').innerHTML = "createOffer is clicked";
+	document.getElementById('debud').innerHTML += "createOffer is clicked<br>";
+if (pc)	{
+		document.getElementById('logs').innerHTML="Offer is sended";
+		pc.createOffer(
+			function(desc)
+			{
+				console.log('createOffer');
+				document.getElementById('debug').innerHTML += "createOffer<br>";
+				pc.setLocalDescription(desc);
+				console.log('setLocalDescription');
+				console.log(desc);
+				document.getElementById('debug').innerHTML += "setLocalDescription<br>";
+				socket.emit("message", desc);
+			},
+			function(err)
+			{
+				console.error(err);
+				document.getElementById('debug').innerHTML += err + "<br>";
+			}
+		);
+		}
+		else console.log('Error: pc is not created. please creat pc.');
+
+}	  
+///////////////////	  
 socket.on('success', function ()
 {
 	console.log("socket.on connected");
