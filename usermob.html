@@ -234,7 +234,6 @@ socket.on('message', function(message)
 			console.log('setRemoteDescription');
 			console.log(message);
 			document.getElementById('debug').innerHTML = 'setRemoteDescription<br>';
-			document.getElementById('debug').innerHTML = message + '<br>';
 			document.getElementById('logs').innerHTML="Aswer is received";
 
 			}
@@ -252,8 +251,7 @@ socket.on('message', function(message)
 				console.log('setRemoteDescription');
 				console.log(message);
 				document.getElementById('debug').innerHTML = 'setRemoteDescription<br>';
-				document.getElementById('debug').innerHTML =  message + '<br>';
-
+				
 				console.log('createAnswer');
 				document.getElementById('debug').innerHTML = 'createAnswer<br>';
 				pc.createAnswer
@@ -263,7 +261,6 @@ socket.on('message', function(message)
 					console.log('setLocalDescription');
 					console.log(desc);
 					document.getElementById('debug').innerHTML = 'setLocalDescription<br>';
-					document.getElementById('debug').innerHTML = desc + '<br>';
 					socket.emit("message", desc);
 					document.getElementById('logs').innerHTML="Answer is sended";
 
@@ -287,7 +284,7 @@ socket.on('message', function(message)
 				if (pc) {
 					pc.addIceCandidate(new RTCIceCandidate(message.candidate));
 					console.log('new IceCandidate is added');
-					document.getElementById('debug').innerHTML = 'new IceCandidate is added<br>';
+					document.getElementById('debug').innerHTML += 'new IceCandidate is added<br>';
 					}
 			}
 	}
