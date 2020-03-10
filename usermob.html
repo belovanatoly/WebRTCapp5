@@ -114,7 +114,8 @@ if (pc) {
 function createOffer_click(){	
 	document.getElementById('logs').innerHTML = "createOffer is clicked";
 	document.getElementById('debud').innerHTML += "createOffer is clicked<br>";
-if (pc)	{
+/*
+	if (pc)	{
 		document.getElementById('logs').innerHTML="Offer is sended";
 		pc.createOffer(
 			function(desc)
@@ -135,7 +136,7 @@ if (pc)	{
 		);
 		}
 		else console.log('Error: pc is not created. please creat pc.');
-
+*/
 }	  
 ///////////////////	  
 socket.on('success', function ()
