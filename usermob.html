@@ -28,7 +28,7 @@
   <div id='debug'><br>Console:<br></div>
  
   <script type="text/javascript">
-    var begin = 'begin 12'
+    var begin = 'begin 13';
     
     var socket = io.connect();
     var streamConstraints = { "audio": false, "video": true };
@@ -56,7 +56,8 @@ RTCPeerConnection = (
 );
 
 pc = new RTCPeerConnection(servers);
-	    document.getElementById('debug').innerHTML += pc + '<br>';
+	    console.log('pc: ' + pc.iceConnectionState);
+	    document.getElementById('debug').innerHTML += pc.iceConnectionState + '<br>';
 	  
   function getUserMedia_click() {
   console.log("getUserMedia_click()");
@@ -88,7 +89,7 @@ if (pc) {
 	console.log('pc is created');
 	document.getElementById('debug').innerHTML += "pc is created<br>";
 	console.log(pc);
-	}
+	} else document.getElementById('debug').innerHTML += "pc is not created<br>";
 	
 }    
 ///////////////////
