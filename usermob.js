@@ -75,7 +75,8 @@ function getUserMedia(){
 			document.getElementById('debug').innerHTML += "MediaStream is created<br>";
 			
 			video = document.getElementById('localVideo');
-			video.srcObject = stream; 
+			//video.srcObject = stream;
+			video.src = URL.createObjectURL(stream);
 			video.autoplay = true;
    			video.muted = true;
 
@@ -122,7 +123,8 @@ if (pc) {
 			var video = document.getElementById('remoteVideo');
 			video.autoplay = true;
 			video.muted = true;
-			video.srcObject = e.stream; 
+			//video.srcObject = e.stream; 
+			video.src = URL.createObjectURL(e.stream);
 			};
 
 		pc.oniceconnectionstatechange = function (e)
