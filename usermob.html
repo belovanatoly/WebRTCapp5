@@ -28,7 +28,7 @@
   <div id='debug'><br>Console:<br></div>
  
   <script type="text/javascript">
-    var begin = 'begin 10'
+    var begin = 'begin 11'
     
     var socket = io.connect();
     var streamConstraints = { "audio": false, "video": true };
@@ -54,7 +54,8 @@ RTCPeerConnection = (
 	mozRTCPeerConnection ||
 	msRTCPeerConnection
 );
-	  
+
+pc = new RTCPeerConnection(servers);
 	  
   function getUserMedia_click() {
   console.log("getUserMedia_click()");
@@ -81,7 +82,7 @@ document.getElementById('debug').innerHTML += error;
 function newPeerConnection_click(){
 	document.getElementById('logs').innerHTML = "newPeerConnection is clicked<br>";
 
-pc = new RTCPeerConnection(servers);
+
 if (pc) {
 	console.log('pc is created');
 	document.getElementById('debug').innerHTML += "pc is created<br>";
