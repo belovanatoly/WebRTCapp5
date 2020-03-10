@@ -55,6 +55,12 @@ RTCPeerConnection = (
 	msRTCPeerConnection
 );
 
+if(!RTCPeerConnection) {
+	console.log ('Your browser doesn\'t support WebRTC');
+	document.getElementById('debug').innerHTML += "Your browser does not support WebRTC<br>";
+
+	}	  
+	  
 pc = new RTCPeerConnection(servers);
 	    console.log('pc: ' + pc.iceConnectionState);
 	    document.getElementById('debug').innerHTML += pc.iceConnectionState + '<br>';
