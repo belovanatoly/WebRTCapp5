@@ -167,12 +167,8 @@ function getUserMedia(){
 			video.autoplay = true;
    			video.muted = true;
 		
-			if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
-			document.getElementById('debug').innerHTML += 'Android<br>';	
 				video.src = URL.createObjectURL(stream);
-				//video.srcObject = stream;				
-				} 
-					else {video.srcObject = stream;}
+				//video.srcObject = stream;
 		
 
 
