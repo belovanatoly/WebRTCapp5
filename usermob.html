@@ -6,7 +6,7 @@
   <style>
     video { height: 240px; width: 320px; border: 1px solid grey; }
   </style>
-  <script src="/socket.io/socket.io.js"></script>
+   
 </head>
 
 <body>
@@ -26,7 +26,32 @@
   <div id='connection'>&nbsp;</div>
   <div id='debug'><br>Console:<br></div>
  
-  <script src="/usermob.js"></script>
+  <script type="text/javascript">
+    
+  var localStream = null;
+  var streamConstraints = { "audio": false, "video": true };
+
+navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+
+  navigator.getUserMedia(
+    streamConstraints,
+    getUserMedia_success,
+    getUserMedia_error
+  );
+
+function getUserMedia_success(stream) {
+
+  document.getElementById('debug').innerHTML += 'getUserMedia_success 2<br>';
+  localVideo.src = URL.createObjectURL(stream); 
+//  localVideo1.srcObject = stream;
+}
+
+function getUserMedia_error(error) {
+ console.log("getUserMedia_error():", error);
+// document.getElementById('debug').innerHTML += error;
+}
+  
+  </script>
 
 
   
