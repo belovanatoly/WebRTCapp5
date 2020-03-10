@@ -77,9 +77,23 @@ var RTCIceCandidate = (
 );
 
 if(!RTCPeerConnection) {console.log ('Your browser doesn\'t support WebRTC');}
+document.getElementById('debug').innerHTML += 'begin<br>';
 
+	  /*
+if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
+document.getElementById('debug').innerHTML += navigator.userAgent + '<br>';}
+	  else {document.getElementById('debug').innerHTML += 'ok<br>';}
+*/
+console.log(navigator.userAgent);
 
-
+function hasUserMedia() { 
+   //check if the browser supports the WebRTC 
+   return !!(navigator.getUserMedia || navigator.webkitGetUserMedia || 
+      navigator.mozGetUserMedia); 
+}
+	  if (hasUserMedia){document.getElementById('debug').innerHTML += 'browser supports the WebRTC <br>';}
+	  else document.getElementById('debug').innerHTML += 'browser does not support the WebRTC <br>';
+	  
 function getUserMedia_click(){
 	document.getElementById('logs').innerHTML="getUserMedia is clicked";
 	PeerConnection();
@@ -279,7 +293,7 @@ socket.on('message', function(message)
 			if (message.candidate)
 			{
 				console.log('IceCandidate is received:');
-				document.getElementById('debug').innerHTML = 'IceCandidate is received:<br>';
+				document.getElementById('debug').innerHTML += 'IceCandidate is received:<br>';
 				console.log(message.candidate);
 				if (pc) {
 					pc.addIceCandidate(new RTCIceCandidate(message.candidate));
