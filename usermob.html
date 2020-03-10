@@ -158,8 +158,8 @@ if (pc)	{
 				console.log('setLocalDescription');
 				console.log(desc);
 				document.getElementById('debug').innerHTML += "setLocalDescription<br>";
-				document.getElementById('debug').innerHTML += desc.type + "<br>";
-				socket.emit("message", desc);
+				//document.getElementById('debug').innerHTML += desc.type + "<br>";
+				socket.emit("message", {type: 'offer'; sdp: desc});
 			},
 			function(err)
 			{
@@ -193,10 +193,11 @@ socket.on('message', function(message)
 			pc.setRemoteDescription(new RTCSessionDescription(message));
 			console.log('setRemoteDescription');
 			console.log(message);
+			
 			document.getElementById('logs').innerHTML="Aswer is received";
 			document.getElementById('debug').innerHTML += "Aswer is received<br>";
 			document.getElementById('debug').innerHTML += "setRemoteDescription<br>";
-
+			document.getElementById('debug').innerHTML += message + "<br>";
 
 			}
 	}
