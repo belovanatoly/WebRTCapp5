@@ -74,11 +74,12 @@ function getUserMedia(){
 			console.log(stream);
 			document.getElementById('debug').innerHTML += "MediaStream is created<br>";
 			
-			video = document.getElementById('localVideo');
+			document.getElementById('localVideo')
 			//video.srcObject = stream;
-			video.src = URL.createObjectURL(stream);
-			video.autoplay = true;
-   			video.muted = true;
+			document.getElementById('localVideo').src = URL.createObjectURL(stream);
+			document.getElementById('localVideo').autoplay = true;
+   			document.getElementById('localVideo').muted = true;
+			document.getElementById('debug').innerHTML += "MediaStream is added to video<br>";
 
 		},
 		function (err)
