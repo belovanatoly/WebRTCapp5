@@ -28,12 +28,13 @@
   <div id='debug'><br>Console:<br></div>
  
   <script type="text/javascript">
-    var begin = 'begin 16';
+    var begin = 'begin 17';
     
     var socket = io.connect();
     var streamConstraints = { "audio": false, "video": true };
-var pc = null;
-var servers = null;	  
+    var localStream = null;
+    var pc = null;
+   var servers = null;	  
 
 	  
     console.log(begin);
@@ -69,11 +70,11 @@ var RTCPeerConnection = (
     
 function getUserMedia_success(stream) {
   document.getElementById('debug').innerHTML += 'getUserMedia_success<br>';
-  localVideo.src = URL.createObjectURL(stream); // Подключаем медиапоток к HTML-элементу <video>
+  localVideo.src = URL.createObjectURL(stream); 
 //  localVideo.srcObject = stream;
   localVideo.autoplay = true;
   localVideo.muted = true;
-//  localStream = stream; // и сохраняем в глобальной переменной для дальнейшего использования
+  localStream = stream; 
 }
 
 function getUserMedia_error(error) {
@@ -91,6 +92,15 @@ if (pc) {
 	console.log('pc is created');
 	document.getElementById('debug').innerHTML += "pc is created<br>";
 	console.log(pc);
+	
+		pc.addStream(localStream);
+		//localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+			
+		console.log("MediaStream is added");
+		document.getElementById('debug').innerHTML += "MediaStream is added<br>";	
+	
+	
+	
 	} else document.getElementById('debug').innerHTML += "pc is not created<br>";
 	
 }    
