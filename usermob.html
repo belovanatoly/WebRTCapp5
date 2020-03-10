@@ -28,7 +28,7 @@
   <div id='debug'><br>Console:<br></div>
  
   <script type="text/javascript">
-    var begin = 'begin 14';
+    var begin = 'begin 15';
     
     var socket = io.connect();
     var streamConstraints = { "audio": false, "video": true };
@@ -47,13 +47,20 @@ navigator.getUserMedia = (
 	navigator.mozGetUserMedia ||
 	navigator.msGetUserMedia
 );
-
-var PeerConnection = window.mozRTCPeerConnection || window.webkitRTCPeerConnection  || RTCPeerConnection;
-	  if(!PeerConnection) {document.getElementById('debug').innerHTML += 'Your browser does not support WebRTC<br>';}
+	  
+var RTCPeerConnection = (
+	RTCPeerConnection ||
+	webkitRTCPeerConnection ||
+	mozRTCPeerConnection ||
+	msRTCPeerConnection
+);
+	  
+//var PeerConnection = window.mozRTCPeerConnection || window.webkitRTCPeerConnection  || RTCPeerConnection;
+	  if(!RTCPeerConnection) {document.getElementById('debug').innerHTML += 'Your browser does not support WebRTC<br>';}
 	  else {document.getElementById('debug').innerHTML += 'Your browser supports WebRTC<br>';}
 
 	  
-pc = new PeerConnection(servers);
+pc = new RTCPeerConnection(servers);
 	    console.log('pc: ' + pc.iceConnectionState);
 	    document.getElementById('debug').innerHTML += pc.iceConnectionState + '<br>';
 	  
