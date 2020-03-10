@@ -47,19 +47,12 @@ navigator.getUserMedia = (
 	navigator.mozGetUserMedia ||
 	navigator.msGetUserMedia
 );
+
+var PeerConnection = window.mozRTCPeerConnection || window.webkitRTCPeerConnection  || RTCPeerConnection;
+	  if(!PeerConnection) {document.getElementById('debug').innerHTML += 'Your browser does not support WebRTC';}
+	  else {document.getElementById('debug').innerHTML += 'Your browser supports WebRTC';}
+
 	  
-RTCPeerConnection = (
-	RTCPeerConnection ||
-	webkitRTCPeerConnection ||
-	mozRTCPeerConnection ||
-	msRTCPeerConnection
-);
-
-if(!RTCPeerConnection) {
-	console.log ('Your browser doesn\'t support WebRTC');
-	document.getElementById('debug').innerHTML += "Your browser does not support WebRTC<br>";
-
-	}	  
 	  
 pc = new RTCPeerConnection(servers);
 	    console.log('pc: ' + pc.iceConnectionState);
