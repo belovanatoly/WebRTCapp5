@@ -118,6 +118,15 @@ if (pc) {
 			socket.emit("message", {type: "candidate", candidate: e.candidate});
 			};
 	
+		pc.onaddstream = function(e) {
+			console.log("Stream received!");
+			console.log(e.stream);
+			document.getElementById('debug').innerHTML += "Stream received!<br>";
+			document.getElementById('remoteVideo').autoplay = true;
+			document.getElementById('remoteVideo').muted = true;
+			document.getElementById('remoteVideo').srcObject = e.stream; 
+			};	
+	
 	} else document.getElementById('debug').innerHTML += "pc is not created<br>";
 	
 }    
@@ -136,7 +145,7 @@ if (pc)	{
 				console.log('setLocalDescription');
 				console.log(desc);
 				document.getElementById('debug').innerHTML += "setLocalDescription<br>";
-				document.getElementById('debug').innerHTML += desc.type + "<br>";
+				document.getElementById('debug').innerHTML += desc + "<br>";
 				socket.emit("message", desc);
 			},
 			function(err)
