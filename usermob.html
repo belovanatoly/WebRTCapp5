@@ -35,7 +35,12 @@
     var streamConstraints = { "audio": false, "video": true };
     var localStream = null;
     var pc = null;
-   var servers = null;	  
+   //var servers = null;	  
+var servers = {"iceServers": 
+	    [
+            {"url": "stun:stun.l.google.com:19302"}
+	    ]
+        };
 	  
     console.log(begin);
     document.getElementById('debug').innerHTML += begin + '<br>'; 
