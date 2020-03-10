@@ -79,12 +79,13 @@ var RTCIceCandidate = (
 if(!RTCPeerConnection) {console.log ('Your browser doesn\'t support WebRTC');}
 document.getElementById('debug').innerHTML += 'begin<br>';
 
-	  /*
+	  
 if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
-document.getElementById('debug').innerHTML += navigator.userAgent + '<br>';}
-	  else {document.getElementById('debug').innerHTML += 'ok<br>';}
-*/
+document.getElementById('debug').innerHTML += 'mobile<br>';}
+	  else {document.getElementById('debug').innerHTML += 'desktop<br>';}
+
 console.log(navigator.userAgent);
+document.getElementById('debug').innerHTML += navigator.userAgent + '<br>';}	  
 
 function hasUserMedia() { 
    //check if the browser supports the WebRTC 
@@ -236,8 +237,8 @@ socket.on('message', function(message)
 {
 	console.log("Message from server:");
 	console.log(message);
-	document.getElementById('debug').innerHTML = 'Message from server:<br>';
-	document.getElementById('debug').innerHTML = message + '<br>';
+	document.getElementById('debug').innerHTML += 'Message from server:<br>';
+	document.getElementById('debug').innerHTML += message + '<br>';
 
 
 	
@@ -247,7 +248,7 @@ socket.on('message', function(message)
 			pc.setRemoteDescription(new RTCSessionDescription(message));
 			console.log('setRemoteDescription');
 			console.log(message);
-			document.getElementById('debug').innerHTML = 'setRemoteDescription<br>';
+			document.getElementById('debug').innerHTML += 'setRemoteDescription<br>';
 			document.getElementById('logs').innerHTML="Aswer is received";
 
 			}
@@ -256,7 +257,7 @@ socket.on('message', function(message)
 	if (message.type == "offer")
 	{
 			console.log('Offer is received:');
-			document.getElementById('debug').innerHTML = 'Offer is received:<br>';
+			document.getElementById('debug').innerHTML += 'Offer is received:<br>';
 			document.getElementById('logs').innerHTML="Offer is received";
 
 			console.log(message);
@@ -264,17 +265,17 @@ socket.on('message', function(message)
 				pc.setRemoteDescription(new RTCSessionDescription(message));
 				console.log('setRemoteDescription');
 				console.log(message);
-				document.getElementById('debug').innerHTML = 'setRemoteDescription<br>';
+				document.getElementById('debug').innerHTML += 'setRemoteDescription<br>';
 				
 				console.log('createAnswer');
-				document.getElementById('debug').innerHTML = 'createAnswer<br>';
+				document.getElementById('debug').innerHTML += 'createAnswer<br>';
 				pc.createAnswer
 				(function(desc)
 				{
 					pc.setLocalDescription(desc)
 					console.log('setLocalDescription');
 					console.log(desc);
-					document.getElementById('debug').innerHTML = 'setLocalDescription<br>';
+					document.getElementById('debug').innerHTML += 'setLocalDescription<br>';
 					socket.emit("message", desc);
 					document.getElementById('logs').innerHTML="Answer is sended";
 
@@ -282,7 +283,7 @@ socket.on('message', function(message)
 				function(err)
 				{
 					console.error(err);
-					document.getElementById('debug').innerHTML = err + '<br>';
+					document.getElementById('debug').innerHTML += err + '<br>';
 				}
 			);
 			}
