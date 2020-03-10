@@ -80,18 +80,24 @@ var RTCIceCandidate = (
   console.log("getUserMedia_click()");
   document.getElementById('logs').innerHTML = 'getUserMedia is clicked';
   document.getElementById('debug').innerHTML += 'getUserMedia is clicked<br>';
-  
+  newPeerConnection_click();
   navigator.getUserMedia(streamConstraints, getUserMedia_success, getUserMedia_error);
 }
     
 function getUserMedia_success(stream) {
   document.getElementById('debug').innerHTML += 'getUserMedia_success<br>';
+
   localVideo.src = URL.createObjectURL(stream); 
 //  localVideo.srcObject = stream;
   localVideo.autoplay = true;
   localVideo.muted = true;
   localStream = stream; 
-	newPeerConnection_click();
+			pc.addStream(localStream);
+		//localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+			
+		console.log("MediaStream is added");
+		document.getElementById('debug').innerHTML += "MediaStream is added<br>";
+	
 }
 
 function getUserMedia_error(error) {
@@ -110,11 +116,7 @@ if (pc) {
 	document.getElementById('debug').innerHTML += "pc is created<br>";
 	console.log(pc);
 	
-		pc.addStream(localStream);
-		//localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
-			
-		console.log("MediaStream is added");
-		document.getElementById('debug').innerHTML += "MediaStream is added<br>";		
+		
 	
 		pc.onicecandidate = function (e){
 			console.log("ICE candidate:");
@@ -159,8 +161,8 @@ if (pc)	{
 				console.log(desc);
 				document.getElementById('debug').innerHTML += "setLocalDescription<br>";
 				//document.getElementById('debug').innerHTML += desc.type + "<br>";
-				//socket.emit("message", desc);
-				socket.emit("message", {type: 'offer', sdp: desc});
+				socket.emit("message", desc);
+				//socket.emit("message", {type: 'offer', sdp: desc});
 			},
 			function(err)
 			{
@@ -215,7 +217,7 @@ socket.on('message', function(message)
 				console.log('setRemoteDescription');
 				console.log(message);
 				document.getElementById('debug').innerHTML += "setRemoteDescription<br>";
-
+				document.getElementById('debug').innerHTML += message.type + "<br>";
 				console.log('createAnswer');
 				document.getElementById('debug').innerHTML += "createAnswer<br>";
 
