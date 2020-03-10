@@ -169,8 +169,8 @@ function getUserMedia(){
 		
 			if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
 			document.getElementById('debug').innerHTML += 'Android<br>';	
-				//video.src = URL.createObjectURL(stream);
-				document.getElementById('localVideo').srcObject = stream;				
+				video.src = URL.createObjectURL(stream);
+				//video.srcObject = stream;				
 				} 
 					else {video.srcObject = stream;}
 		
@@ -242,7 +242,7 @@ function AudioOn_click(){
 socket.on('success', function ()
 {
 	console.log("socket.on connected");
-	document.getElementById('debug').innerHTML += 'socket.on connected<br>';
+	document.getElementById('debug').innerHTML += 'socket.on connected 2<br>';
 
 });
 
