@@ -91,6 +91,7 @@ function getUserMedia_success(stream) {
   localVideo.autoplay = true;
   localVideo.muted = true;
   localStream = stream; 
+	newPeerConnection_click();
 }
 
 function getUserMedia_error(error) {
@@ -131,7 +132,14 @@ if (pc) {
 			document.getElementById('remoteVideo').muted = true;
 			document.getElementById('remoteVideo').srcObject = e.stream; 
 			};	
-	
+		pc.oniceconnectionstatechange = function (e)
+		{
+			console.log('oniceconnectionstatechange');
+			document.getElementById('debug').innerHTML += "oniceconnectionstatechange<br>";
+			document.getElementById('debug').innerHTML += e.target.iceConnectionState + "<br>";
+			console.log(e.target);
+			document.getElementById('connection').innerHTML = e.target.iceConnectionState + " ... " + e.target.iceGatheringState;
+		};	
 	} else document.getElementById('debug').innerHTML += "pc is not created<br>";
 	
 }    
