@@ -6,6 +6,7 @@
   <script src="/socket.io/socket.io.js"></script>
   <style>
     video { height: 240px; width: 320px; border: 1px solid grey; }
+	  #debug {font-size: 12px;}
   </style>
    
 </head>
@@ -35,13 +36,10 @@
     var localStream = null;
     var pc = null;
    var servers = null;	  
-
 	  
     console.log(begin);
     document.getElementById('debug').innerHTML += begin + '<br>'; 
   
-//navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-	  
 navigator.getUserMedia = (
 	navigator.getUserMedia ||
 	navigator.webkitGetUserMedia ||
@@ -56,7 +54,20 @@ var RTCPeerConnection = (
 	msRTCPeerConnection
 );
 	  
-//var PeerConnection = window.mozRTCPeerConnection || window.webkitRTCPeerConnection  || RTCPeerConnection;
+var RTCSessionDescription = (
+	RTCSessionDescription ||
+	webkitRTCSessionDescription ||
+	mozRTCSessionDescription ||
+	msRTCSessionDescription
+);
+
+var RTCIceCandidate = (
+	RTCIceCandidate ||
+	webkitRTCIceCandidate ||
+	mozRTCIceCandidate ||
+	msRTCIceCandidate
+);
+	  
 	  if(!RTCPeerConnection) {document.getElementById('debug').innerHTML += 'Your browser does not support WebRTC<br>';}
 	  else {document.getElementById('debug').innerHTML += 'Your browser supports WebRTC<br>';}
 
@@ -125,7 +136,7 @@ if (pc)	{
 				console.log('setLocalDescription');
 				console.log(desc);
 				document.getElementById('debug').innerHTML += "setLocalDescription<br>";
-				document.getElementById('debug').innerHTML += sdp.type + "<br>";
+				document.getElementById('debug').innerHTML += desc.type + "<br>";
 				//socket.emit("message", desc);
 			},
 			function(err)
