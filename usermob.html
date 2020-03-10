@@ -145,7 +145,7 @@ if (pc)	{
 				console.log('setLocalDescription');
 				console.log(desc);
 				document.getElementById('debug').innerHTML += "setLocalDescription<br>";
-				document.getElementById('debug').innerHTML += desc + "<br>";
+				document.getElementById('debug').innerHTML += desc.sdp + "<br>";
 				socket.emit("message", desc);
 			},
 			function(err)
@@ -183,6 +183,20 @@ socket.on('success', function ()
 			}
 	}
 	  
+	if (message.type == "candidate")
+	{
+			if (message.candidate)
+			{
+				console.log('IceCandidate is receved:');
+				console.log(message.candidate);
+				document.getElementById('debug').innerHTML += "IceCandidate is receved<br>";
+				if (pc) {
+					pc.addIceCandidate(new RTCIceCandidate(message.candidate));
+					console.log('new IceCandidate is added');
+					document.getElementById('debug').innerHTML += "new IceCandidate is added<br>";
+					}
+			}
+	}	  
 	  
 socket.on('error', function(err)
 {
