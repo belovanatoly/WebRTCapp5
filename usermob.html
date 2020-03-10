@@ -114,6 +114,13 @@ if (pc) {
 function createOffer_click(){	
 	document.getElementById('logs').innerHTML = "createOffer is clicked";
 	document.getElementById('debug').innerHTML += "createOffer is clicked<br>";
+if (pc)	{
+		document.getElementById('debug').innerHTML += "Offer is sending<br>";
+	
+		} else {
+			console.log('Error: pc is not created');
+			document.getElementById('debug').innerHTML="Error: pc is not created";
+		}
 
 
 }	  
