@@ -155,16 +155,18 @@ function getUserMedia(){
 			console.log("MediaStream is created");
 			console.log(stream);
 			document.getElementById('debug').innerHTML += 'MediaStream is created<br>';
-
-			if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
-			document.getElementById('debug').innerHTML += 'Android<br>';	
-				localVideo1.src = URL.createObjectURL(stream);} 
-					else {video = document.getElementById('localVideo');}
 		
-			
-			video.srcObject = stream; 
+			video = document.getElementById('localVideo');
+			 
 			video.autoplay = true;
    			video.muted = true;
+		
+			if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
+			document.getElementById('debug').innerHTML += 'Android<br>';	
+				video.src = URL.createObjectURL(stream);} 
+					else {video.srcObject = stream;}
+		
+
 
 			localStream = stream;
 			//console.log(stream.getTracks()[0]);
