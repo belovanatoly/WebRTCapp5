@@ -81,11 +81,11 @@ document.getElementById('debug').innerHTML += 'begin<br>';
 
 	  
 if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
-document.getElementById('debug').innerHTML += 'mobile<br>';}
+	document.getElementById('debug').innerHTML += 'mobile<br>';}
 	  else {document.getElementById('debug').innerHTML += 'desktop<br>';}
 
 console.log(navigator.userAgent);
-document.getElementById('debug').innerHTML += navigator.userAgent + '<br>';}	  
+//document.getElementById('debug').innerHTML += navigator.userAgent + '<br>';}	  
 
 function hasUserMedia() { 
    //check if the browser supports the WebRTC 
