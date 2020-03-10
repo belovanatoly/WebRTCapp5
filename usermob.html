@@ -1,0 +1,34 @@
+﻿<html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>user</title>
+  <style>
+    video { height: 240px; width: 320px; border: 1px solid grey; }
+  </style>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+
+
+<p>User</p>
+
+  <button id="btn_getUserMedia" onclick="getUserMedia_click()">getUserMedia</button>
+  <button id="btn_newPeerConnection" onclick="newPeerConnection_click()">newPeerConnection</button>
+  <button id="btn_createOffer" onclick="createOffer_click()">createOffer</button>
+  <button id="btn_AudioOn" onclick="AudioOn_click()">AudioOn</button>
+  <button id="btn_AudioOff" onclick="AudioOff_click()">AudioOff</button>
+  <br>
+  <video id="localVideo"></video>
+  <video id="remoteVideo"></video>
+  <div id='logs'>&nbsp;</div>
+  <div id='connection'>&nbsp;</div>
+  <div id='debug'><br>Console:<br></div>
+ 
+  <script src="/usermob.js"></script>
+
+
+  
+</body>
+</html>
