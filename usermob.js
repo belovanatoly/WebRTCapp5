@@ -2,8 +2,6 @@
 
 console.log("begin");
 
-var socket = io.connect();
-
 var mediaConstraints = {
   audio: true, 
   video: true 
@@ -54,43 +52,28 @@ if(!RTCPeerConnection) {
 	document.getElementById('debug').innerHTML += "Your browser does not support WebRTC<br>";
 
 	}
-	
-	document.getElementById('debug').innerHTML += "begin<br>";
-	
-function getUserMedia_click(){
-	document.getElementById('logs').innerHTML="getUserMedia is clicked";
-	getUserMedia();
+
+function getUserMedia_click() {
+document.getElementById('debug').innerHTML += 'getUserMedia_click<br>';
+  console.log("getUserMedia_click()");
+  navigator.getUserMedia(
+    streamConstraints,
+    getUserMedia_success,
+    getUserMedia_error
+  );
 }
 
-function getUserMedia(){
-	navigator.getUserMedia(mediaConstraints,
-		function (stream)
-		{
-			localStream = stream;
-			//console.log(stream.getTracks()[0]);
-			//console.log(stream.getTracks()[1]);
-
-			console.log("MediaStream is created");
-			console.log(stream);
-			document.getElementById('debug').innerHTML += "MediaStream is created<br>";
-			
-			document.getElementById('localVideo')
-			//video.srcObject = stream;
-			document.getElementById('localVideo').src = URL.createObjectURL(stream);
-			document.getElementById('localVideo').autoplay = true;
-   			document.getElementById('localVideo').muted = true;
-			document.getElementById('debug').innerHTML += "MediaStream is added to video<br>";
-
-		},
-		function (err)
-		{
-			console.error(err);
-			document.getElementById('debug').innerHTML += err +'<br>';
-		}
-	);
+function getUserMedia_success(stream) {
+  console.log("getUserMedia_success():", stream);
+  localVideo.src = URL.createObjectURL(stream); // Подключаем медиапоток к HTML-элементу <video>
+//  localVideo1.srcObject = stream;
+  localStream = stream; // и сохраняем в глобальной переменной для дальнейшего использования
 }
 
-
+function getUserMedia_error(error) {
+  console.log("getUserMedia_error():", error);
+document.getElementById('debug').innerHTML += error;
+}
 
 
 ///////////////////
