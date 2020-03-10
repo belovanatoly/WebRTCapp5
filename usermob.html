@@ -20,7 +20,7 @@
   <button id="btn_AudioOn" onclick="AudioOn_click()">AudioOn</button>
   <button id="btn_AudioOff" onclick="AudioOff_click()">AudioOff</button>
   <br>
-  <video id="localVideo"></video>
+  <video id="localVideo" autoplay></video>
   <video id="remoteVideo"></video>
   <div id='logs'>&nbsp;</div>
   <div id='connection'>&nbsp;</div>
@@ -37,7 +37,7 @@
 function getUserMedia_success(stream) {
  // console.log("getUserMedia_success():", stream);
   document.getElementById('debug').innerHTML += 'getUserMedia_success<br>';
- // localVideo.src = URL.createObjectURL(stream); // Подключаем медиапоток к HTML-элементу <video>
+ localVideo.src = URL.createObjectURL(stream); // Подключаем медиапоток к HTML-элементу <video>
 //  localVideo1.srcObject = stream;
 //  localStream = stream; // и сохраняем в глобальной переменной для дальнейшего использования
 }
