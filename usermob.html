@@ -98,15 +98,15 @@ if (pc) {
 			
 		console.log("MediaStream is added");
 		document.getElementById('debug').innerHTML += "MediaStream is added<br>";		
-	/*
+	
 		pc.onicecandidate = function (e){
 			console.log("ICE candidate:");
 			console.log(e.candidate);
 			if (e.candidate) {document.getElementById('debug').innerHTML += "ICE candidate: " + e.candidate.candidate + '<br>';}
 				else {document.getElementById('debug').innerHTML += "ICE candidate: null<br>";}
-			socket.emit("message", {type: "candidate", candidate: e.candidate});
+			//socket.emit("message", {type: "candidate", candidate: e.candidate});
 			};
-	*/
+	
 	} else document.getElementById('debug').innerHTML += "pc is not created<br>";
 	
 }    
@@ -124,7 +124,8 @@ if (pc)	{
 				pc.setLocalDescription(desc);
 				console.log('setLocalDescription');
 				console.log(desc);
-				//document.getElementById('debug').innerHTML += "setLocalDescription<br>";
+				document.getElementById('debug').innerHTML += "setLocalDescription<br>";
+				document.getElementById('debug').innerHTML += sdp.type + "<br>";
 				//socket.emit("message", desc);
 			},
 			function(err)
