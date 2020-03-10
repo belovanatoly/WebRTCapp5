@@ -13,7 +13,7 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia 
 
 function getUserMedia_success(stream) {
 
-  document.getElementById('debug').innerHTML += 'getUserMedia_success 2';
+  document.getElementById('debug').innerHTML += 'getUserMedia_success 2<br>';
   localVideo.src = URL.createObjectURL(stream); 
 //  localVideo1.srcObject = stream;
 }
