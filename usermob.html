@@ -213,7 +213,8 @@ socket.on('message', function(message)
 
 			console.log(message);
 			if(pc){
-				pc.setRemoteDescription(new RTCSessionDescription(message));
+				pc.setRemoteDescription(new RTCSessionDescription(message))
+				.then (function () {CREATE_ANSWER ()}) ;
 				console.log('setRemoteDescription');
 				console.log(message);
 				document.getElementById('debug').innerHTML += "setRemoteDescription<br>";
@@ -221,6 +222,7 @@ socket.on('message', function(message)
 				console.log('createAnswer');
 				document.getElementById('debug').innerHTML += "createAnswer<br>";
 
+				function CREATE_ANSWER(){
 				pc.createAnswer(function(desc){
 					document.getElementById('debug').innerHTML += "HERE<br>";
 					pc.setLocalDescription(desc)
@@ -236,7 +238,9 @@ socket.on('message', function(message)
 					console.error(err);
 					document.getElementById('debug').innerHTML += err+ "<br>";
 				}
+				}			
 			);
+					
 			}
 	}
 
