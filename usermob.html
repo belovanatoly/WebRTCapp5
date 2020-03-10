@@ -217,9 +217,8 @@ socket.on('message', function(message)
 				console.log('createAnswer');
 				document.getElementById('debug').innerHTML += "createAnswer<br>";
 
-				pc.createAnswer
-				(function(desc)
-				{
+				pc.createAnswer(function(desc){
+					document.getElementById('debug').innerHTML += "HERE<br>";
 					pc.setLocalDescription(desc)
 					console.log('setLocalDescription');
 					console.log(desc);
