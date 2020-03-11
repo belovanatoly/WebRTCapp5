@@ -131,8 +131,8 @@ if (pc) {
 		 
 				if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
 			document.getElementById('debug').innerHTML += 'Android<br>';	
-				document.getElementById('remoteVideo').src = URL.createObjectURL(e.stream);
-				document.getElementById('remoteVideo').srcObject = e.stream;
+				video.src = URL.createObjectURL(e.stream);
+				//video.srcObject = e.stream;
 				} 
 					else {video.srcObject = e.stream;}		
 		};
@@ -161,15 +161,15 @@ function getUserMedia(){
 			console.log(stream);
 			document.getElementById('debug').innerHTML += 'MediaStream is created<br>';
 		
-			video = document.getElementById('localVideo');
+			var video = document.getElementById('localVideo');
 			 
 			video.autoplay = true;
    			video.muted = true;
 		
 			if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
 			document.getElementById('debug').innerHTML += 'Android<br>';	
-				document.getElementById('localVideo').src = URL.createObjectURL(stream);
-				document.getElementById('localVideo').srcObject = stream;				
+				video.src = URL.createObjectURL(stream);
+				//video.srcObject = stream;				
 				} 
 					else {video.srcObject = stream;}
 		
