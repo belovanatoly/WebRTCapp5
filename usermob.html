@@ -2,8 +2,8 @@
 <head>
 <meta charset="utf-8">
 <title>user</title>
-  <style>    
-    video { height: 240px; width: 320px; border: 1px solid grey;}
+  <style>
+    video { height: 240px; width: 320px; border: 1px solid grey; }
   </style>
   <script src="/socket.io/socket.io.js"></script>
 </head>
@@ -161,10 +161,10 @@ function getUserMedia(){
 			console.log(stream);
 			document.getElementById('debug').innerHTML += 'MediaStream is created<br>';
 		
-			video = document.getElementById('localVideo');
+			var video = document.getElementById('localVideo');
 			 
-			video.autoplay = true;
-   			video.muted = true;
+			document.getElementById('localVideo').autoplay = true;
+   			document.getElementById('localVideo').muted = true;
 		
 			if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
 			document.getElementById('debug').innerHTML += 'Android<br>';	
@@ -174,15 +174,6 @@ function getUserMedia(){
 					else {document.getElementById('localVideo').srcObject = stream;}
 		
 
-/*
-			// Older browsers may not have srcObject
-			if ('srcObject' in video) {
-			  video.srcObject = stream;
-			} else {
-			  // Avoid using this in new browsers, as it is going away.
-			  video.src = URL.createObjectURL(stream);
-			}			
-*/
 
 			localStream = stream;
 			//console.log(stream.getTracks()[0]);
@@ -239,13 +230,10 @@ if (pc)	{
 
 function AudioOff_click(){
 	document.getElementById('remoteVideo').muted = true;
-	document.getElementById('logs').innerHTML="Audio is off";
-
 }
 
 function AudioOn_click(){
 	document.getElementById('remoteVideo').muted = false;
-	document.getElementById('logs').innerHTML="Audio is on";
 }
 
 
@@ -254,6 +242,8 @@ socket.on('success', function ()
 {
 	console.log("socket.on connected");
 	document.getElementById('debug').innerHTML += 'socket.on connected<br>';
+	document.getElementById('debug').innerHTML += 'only audio<br>';
+	
 
 });
 
