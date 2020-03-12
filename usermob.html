@@ -3,13 +3,13 @@
 <meta charset="utf-8">
 <title>user</title>
   <style>
-    video { height: 240px; width: 320px; border: 1px solid grey; }
+
   </style>
   <script src="/socket.io/socket.io.js"></script>
 </head>
 
 <body>
-
+    <!-- video {  width: 320px; border: 1px solid grey; } // height: 240px; -->
 
 <p>User</p>
 
@@ -32,7 +32,7 @@ var socket = io.connect();
 
 var mediaConstraints = {
   audio: true, 
-  video: false
+  video: true 
 };
 
 var localStream = null;
@@ -161,18 +161,27 @@ function getUserMedia(){
 			console.log(stream);
 			document.getElementById('debug').innerHTML += 'MediaStream is created<br>';
 		
-			var video = document.getElementById('localVideo');
+			video = document.getElementById('localVideo');
 			 
-			document.getElementById('localVideo').autoplay = true;
-   			document.getElementById('localVideo').muted = true;
-		
+			video.autoplay = true;
+   			video.muted = true;
+/*		
 			if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
 			document.getElementById('debug').innerHTML += 'Android<br>';	
 				document.getElementById('localVideo').src = URL.createObjectURL(stream);
 				//video.srcObject = stream;				
 				} 
 					else {document.getElementById('localVideo').srcObject = stream;}
-		
+*/		
+
+
+			// Older browsers may not have srcObject
+			if ('srcObject' in video) {
+			  video.srcObject = stream;
+			} else {
+			  // Avoid using this in new browsers, as it is going away.
+			  video.src = URL.createObjectURL(stream);
+			}			
 
 
 			localStream = stream;
@@ -230,10 +239,13 @@ if (pc)	{
 
 function AudioOff_click(){
 	document.getElementById('remoteVideo').muted = true;
+	document.getElementById('logs').innerHTML="Audio is off";
+
 }
 
 function AudioOn_click(){
 	document.getElementById('remoteVideo').muted = false;
+	document.getElementById('logs').innerHTML="Audio is on";
 }
 
 
@@ -242,8 +254,6 @@ socket.on('success', function ()
 {
 	console.log("socket.on connected");
 	document.getElementById('debug').innerHTML += 'socket.on connected<br>';
-	document.getElementById('debug').innerHTML += 'only audio<br>';
-	
 
 });
 
