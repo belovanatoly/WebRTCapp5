@@ -165,16 +165,16 @@ function getUserMedia(){
 			 
 			video.autoplay = true;
    			video.muted = true;
-/*		
+		
 			if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
 			document.getElementById('debug').innerHTML += 'Android<br>';	
 				document.getElementById('localVideo').src = URL.createObjectURL(stream);
 				//video.srcObject = stream;				
 				} 
 					else {document.getElementById('localVideo').srcObject = stream;}
-*/		
+		
 
-
+/*
 			// Older browsers may not have srcObject
 			if ('srcObject' in video) {
 			  video.srcObject = stream;
@@ -182,7 +182,7 @@ function getUserMedia(){
 			  // Avoid using this in new browsers, as it is going away.
 			  video.src = URL.createObjectURL(stream);
 			}			
-
+*/
 
 			localStream = stream;
 			//console.log(stream.getTracks()[0]);
