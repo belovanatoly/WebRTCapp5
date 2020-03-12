@@ -31,7 +31,7 @@ console.log("begin");
 var socket = io.connect();
 
 var mediaConstraints = {
-  audio: false, 
+  audio: true, 
   video: true
 };
 
@@ -242,9 +242,7 @@ socket.on('success', function ()
 {
 	console.log("socket.on connected");
 	document.getElementById('debug').innerHTML += 'socket.on connected<br>';
-	document.getElementById('debug').innerHTML += 'only audio<br>';
 	
-
 });
 
 
