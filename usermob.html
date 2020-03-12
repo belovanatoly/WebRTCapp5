@@ -1,4 +1,5 @@
 <html>
+<html>
 <head>
 <meta charset="utf-8">
 <title>user</title>
@@ -161,19 +162,15 @@ function getUserMedia(){
 			console.log(stream);
 			document.getElementById('debug').innerHTML += 'MediaStream is created<br>';
 		
-			var video = document.getElementById('localVideo');
+			video = document.getElementById('localVideo');
 			 
+
+		
+				video.src = URL.createObjectURL(stream);
+				//video.srcObject = stream;
+		
 			video.autoplay = true;
    			video.muted = true;
-		
-			if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
-			document.getElementById('debug').innerHTML += 'Android<br>';	
-				video.src = URL.createObjectURL(stream);
-				//video.srcObject = stream;				
-				} 
-					else {video.srcObject = stream;}
-		
-
 
 			localStream = stream;
 			//console.log(stream.getTracks()[0]);
@@ -241,7 +238,7 @@ function AudioOn_click(){
 socket.on('success', function ()
 {
 	console.log("socket.on connected");
-	document.getElementById('debug').innerHTML += 'socket.on connected<br>';
+	document.getElementById('debug').innerHTML += 'socket.on connected 2<br>';
 
 });
 
