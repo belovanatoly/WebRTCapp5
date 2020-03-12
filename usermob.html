@@ -77,23 +77,9 @@ var RTCIceCandidate = (
 );
 
 if(!RTCPeerConnection) {console.log ('Your browser doesn\'t support WebRTC');}
-document.getElementById('debug').innerHTML += 'begin<br>';
 
-	  /*
-if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
-document.getElementById('debug').innerHTML += navigator.userAgent + '<br>';}
-	  else {document.getElementById('debug').innerHTML += 'ok<br>';}
-*/
-console.log(navigator.userAgent);
 
-function hasUserMedia() { 
-   //check if the browser supports the WebRTC 
-   return !!(navigator.getUserMedia || navigator.webkitGetUserMedia || 
-      navigator.mozGetUserMedia); 
-}
-	  if (hasUserMedia){document.getElementById('debug').innerHTML += 'browser supports the WebRTC <br>';}
-	  else document.getElementById('debug').innerHTML += 'browser does not support the WebRTC <br>';
-	  
+
 function getUserMedia_click(){
 	document.getElementById('logs').innerHTML="getUserMedia is clicked";
 	PeerConnection();
@@ -248,6 +234,7 @@ socket.on('message', function(message)
 			console.log('setRemoteDescription');
 			console.log(message);
 			document.getElementById('debug').innerHTML = 'setRemoteDescription<br>';
+			document.getElementById('debug').innerHTML = message + '<br>';
 			document.getElementById('logs').innerHTML="Aswer is received";
 
 			}
@@ -265,7 +252,8 @@ socket.on('message', function(message)
 				console.log('setRemoteDescription');
 				console.log(message);
 				document.getElementById('debug').innerHTML = 'setRemoteDescription<br>';
-				
+				document.getElementById('debug').innerHTML =  message + '<br>';
+
 				console.log('createAnswer');
 				document.getElementById('debug').innerHTML = 'createAnswer<br>';
 				pc.createAnswer
@@ -275,6 +263,7 @@ socket.on('message', function(message)
 					console.log('setLocalDescription');
 					console.log(desc);
 					document.getElementById('debug').innerHTML = 'setLocalDescription<br>';
+					document.getElementById('debug').innerHTML = desc + '<br>';
 					socket.emit("message", desc);
 					document.getElementById('logs').innerHTML="Answer is sended";
 
@@ -293,12 +282,12 @@ socket.on('message', function(message)
 			if (message.candidate)
 			{
 				console.log('IceCandidate is received:');
-				document.getElementById('debug').innerHTML += 'IceCandidate is received:<br>';
+				document.getElementById('debug').innerHTML = 'IceCandidate is received:<br>';
 				console.log(message.candidate);
 				if (pc) {
 					pc.addIceCandidate(new RTCIceCandidate(message.candidate));
 					console.log('new IceCandidate is added');
-					document.getElementById('debug').innerHTML += 'new IceCandidate is added<br>';
+					document.getElementById('debug').innerHTML = 'new IceCandidate is added<br>';
 					}
 			}
 	}
