@@ -1,5 +1,4 @@
 <html>
-<html>
 <head>
 <meta charset="utf-8">
 <title>user</title>
@@ -33,7 +32,7 @@ var socket = io.connect();
 
 var mediaConstraints = {
   audio: true, 
-  video: true 
+  video: false
 };
 
 var localStream = null;
@@ -77,9 +76,24 @@ var RTCIceCandidate = (
 );
 
 if(!RTCPeerConnection) {console.log ('Your browser doesn\'t support WebRTC');}
+document.getElementById('debug').innerHTML += 'begin<br>';
 
+	  
+if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
+	document.getElementById('debug').innerHTML += 'mobile<br>';}
+	  else {document.getElementById('debug').innerHTML += 'desktop<br>';}
 
+console.log(navigator.userAgent);
+//document.getElementById('debug').innerHTML += navigator.userAgent + '<br>';}	  
 
+function hasUserMedia() { 
+   //check if the browser supports the WebRTC 
+   return !!(navigator.getUserMedia || navigator.webkitGetUserMedia || 
+      navigator.mozGetUserMedia); 
+}
+	  if (hasUserMedia){document.getElementById('debug').innerHTML += 'browser supports the WebRTC <br>';}
+	  else document.getElementById('debug').innerHTML += 'browser does not support the WebRTC <br>';
+	  
 function getUserMedia_click(){
 	document.getElementById('logs').innerHTML="getUserMedia is clicked";
 	PeerConnection();
@@ -111,10 +125,16 @@ if (pc) {
 		console.log(e.stream);
 		document.getElementById('debug').innerHTML += 'Stream received!<br>';
 
-		var video = document.getElementById('remoteVideo');
-		video.autoplay = true;
-		video.muted = true;
-		video.srcObject = e.stream; 
+		//var video = document.getElementById('remoteVideo');
+		document.getElementById('remoteVideo').autoplay = true;
+		document.getElementById('remoteVideo').muted = true;
+		 
+				if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
+			document.getElementById('debug').innerHTML += 'Android<br>';	
+				document.getElementById('remoteVideo').src = URL.createObjectURL(e.stream);
+				//video.srcObject = e.stream;
+				} 
+					else {document.getElementById('remoteVideo').srcObject = e.stream;}		
 		};
 
 		pc.oniceconnectionstatechange = function (e)
@@ -140,12 +160,20 @@ function getUserMedia(){
 			console.log("MediaStream is created");
 			console.log(stream);
 			document.getElementById('debug').innerHTML += 'MediaStream is created<br>';
+		
+			var video = document.getElementById('localVideo');
+			 
+			document.getElementById('localVideo').autoplay = true;
+   			document.getElementById('localVideo').muted = true;
+		
+			if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
+			document.getElementById('debug').innerHTML += 'Android<br>';	
+				document.getElementById('localVideo').src = URL.createObjectURL(stream);
+				//video.srcObject = stream;				
+				} 
+					else {document.getElementById('localVideo').srcObject = stream;}
+		
 
-			
-			video = document.getElementById('localVideo');
-			video.srcObject = stream; 
-			video.autoplay = true;
-   			video.muted = true;
 
 			localStream = stream;
 			//console.log(stream.getTracks()[0]);
@@ -214,6 +242,8 @@ socket.on('success', function ()
 {
 	console.log("socket.on connected");
 	document.getElementById('debug').innerHTML += 'socket.on connected<br>';
+	document.getElementById('debug').innerHTML += 'only audio<br>';
+	
 
 });
 
@@ -222,8 +252,8 @@ socket.on('message', function(message)
 {
 	console.log("Message from server:");
 	console.log(message);
-	document.getElementById('debug').innerHTML = 'Message from server:<br>';
-	document.getElementById('debug').innerHTML = message + '<br>';
+	document.getElementById('debug').innerHTML += 'Message from server:<br>';
+	document.getElementById('debug').innerHTML += message + '<br>';
 
 
 	
@@ -233,8 +263,7 @@ socket.on('message', function(message)
 			pc.setRemoteDescription(new RTCSessionDescription(message));
 			console.log('setRemoteDescription');
 			console.log(message);
-			document.getElementById('debug').innerHTML = 'setRemoteDescription<br>';
-			document.getElementById('debug').innerHTML = message + '<br>';
+			document.getElementById('debug').innerHTML += 'setRemoteDescription<br>';
 			document.getElementById('logs').innerHTML="Aswer is received";
 
 			}
@@ -243,7 +272,7 @@ socket.on('message', function(message)
 	if (message.type == "offer")
 	{
 			console.log('Offer is received:');
-			document.getElementById('debug').innerHTML = 'Offer is received:<br>';
+			document.getElementById('debug').innerHTML += 'Offer is received:<br>';
 			document.getElementById('logs').innerHTML="Offer is received";
 
 			console.log(message);
@@ -251,19 +280,17 @@ socket.on('message', function(message)
 				pc.setRemoteDescription(new RTCSessionDescription(message));
 				console.log('setRemoteDescription');
 				console.log(message);
-				document.getElementById('debug').innerHTML = 'setRemoteDescription<br>';
-				document.getElementById('debug').innerHTML =  message + '<br>';
-
+				document.getElementById('debug').innerHTML += 'setRemoteDescription<br>';
+				
 				console.log('createAnswer');
-				document.getElementById('debug').innerHTML = 'createAnswer<br>';
+				document.getElementById('debug').innerHTML += 'createAnswer<br>';
 				pc.createAnswer
 				(function(desc)
 				{
 					pc.setLocalDescription(desc)
 					console.log('setLocalDescription');
 					console.log(desc);
-					document.getElementById('debug').innerHTML = 'setLocalDescription<br>';
-					document.getElementById('debug').innerHTML = desc + '<br>';
+					document.getElementById('debug').innerHTML += 'setLocalDescription<br>';
 					socket.emit("message", desc);
 					document.getElementById('logs').innerHTML="Answer is sended";
 
@@ -271,7 +298,7 @@ socket.on('message', function(message)
 				function(err)
 				{
 					console.error(err);
-					document.getElementById('debug').innerHTML = err + '<br>';
+					document.getElementById('debug').innerHTML += err + '<br>';
 				}
 			);
 			}
@@ -282,12 +309,12 @@ socket.on('message', function(message)
 			if (message.candidate)
 			{
 				console.log('IceCandidate is received:');
-				document.getElementById('debug').innerHTML = 'IceCandidate is received:<br>';
+				document.getElementById('debug').innerHTML += 'IceCandidate is received:<br>';
 				console.log(message.candidate);
 				if (pc) {
 					pc.addIceCandidate(new RTCIceCandidate(message.candidate));
 					console.log('new IceCandidate is added');
-					document.getElementById('debug').innerHTML = 'new IceCandidate is added<br>';
+					document.getElementById('debug').innerHTML += 'new IceCandidate is added<br>';
 					}
 			}
 	}
