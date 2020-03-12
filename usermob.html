@@ -31,7 +31,7 @@ console.log("begin");
 var socket = io.connect();
 
 var mediaConstraints = {
-  audio: false, 
+  audio: true, 
   video: true 
 };
 
@@ -125,16 +125,16 @@ if (pc) {
 		console.log(e.stream);
 		document.getElementById('debug').innerHTML += 'Stream received!<br>';
 
-		//var video = document.getElementById('remoteVideo');
-		document.getElementById('remoteVideo').autoplay = true;
-		document.getElementById('remoteVideo').muted = true;
+		var video = document.getElementById('remoteVideo');
+		video.autoplay = true;
+		video.muted = true;
 		 
 				if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
 			document.getElementById('debug').innerHTML += 'Android<br>';	
-				document.getElementById('remoteVideo').src = URL.createObjectURL(e.stream);
+				video.src = URL.createObjectURL(e.stream);
 				//video.srcObject = e.stream;
 				} 
-					else {document.getElementById('remoteVideo').srcObject = e.stream;}		
+					else {video.srcObject = e.stream;}		
 		};
 
 		pc.oniceconnectionstatechange = function (e)
@@ -163,15 +163,15 @@ function getUserMedia(){
 		
 			var video = document.getElementById('localVideo');
 			 
-			document.getElementById('localVideo').autoplay = true;
-   			document.getElementById('localVideo').muted = true;
+			video.autoplay = true;
+   			video.muted = true;
 		
 			if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
 			document.getElementById('debug').innerHTML += 'Android<br>';	
-				document.getElementById('localVideo').src = URL.createObjectURL(stream);
+				video.src = URL.createObjectURL(stream);
 				//video.srcObject = stream;				
 				} 
-					else {document.getElementById('localVideo').srcObject = stream;}
+					else {video.srcObject = stream;}
 		
 
 
