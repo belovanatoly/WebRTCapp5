@@ -21,6 +21,7 @@ io.sockets.on('connection', function (socket){
 
 	socket.on('disconnect', function () {
 		console.log('an user disconnected ' + socket.id + ' ' + socket.room);
+		socket.broadcast.to(socket.room).emit('message', {type: 'room', value: 'disconnected', room: socket.room});
 		});
 
 	socket.on('message', function (message) {
