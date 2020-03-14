@@ -1,0 +1,352 @@
+<html>
+<head>
+<meta charset="utf-8">
+<title>user</title>
+  <style>
+    video { height: 240px; width: 320px; border: 1px solid grey; }
+  </style>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+
+
+<p>User</p>
+
+  <button id="btn_enterID" onclick="enterID_click()">enterID</button>
+  <button id="btn_getUserMedia" onclick="getUserMedia_click()">getUserMedia</button>
+  <button id="btn_createOffer" onclick="createOffer_click()">createOffer</button>
+  <button id="btn_AudioOn" onclick="AudioOn_click()">AudioOn</button>
+  <button id="btn_AudioOff" onclick="AudioOff_click()">AudioOff</button>
+  <br>
+  <video id="localVideo"></video>
+  <video id="remoteVideo"></video>
+  <div id='logs'>&nbsp;</div>
+  <div id='connection'>&nbsp;</div>
+  <div id='debug'><br>Console:<br></div>
+ 
+  <script type="text/javascript">
+
+console.log("begin");
+
+var socket = io.connect();
+
+var localVideo = document.getElementById('localVideo');
+var remoteVideo = document.getElementById('remoteVideo');
+
+
+var mediaConstraints = {audio: true, video: true};
+
+var id;
+
+var pc = null;
+//var servers = null;
+
+
+var servers = {"iceServers": 
+	    [
+            {"url": "stun:stun.l.google.com:19302"}
+	    ]
+        };
+
+		
+navigator.getUserMedia = (
+	navigator.getUserMedia ||
+	navigator.webkitGetUserMedia ||
+	navigator.mozGetUserMedia ||
+	navigator.msGetUserMedia
+);
+
+var RTCPeerConnection = (
+	RTCPeerConnection ||
+	webkitRTCPeerConnection ||
+	mozRTCPeerConnection ||
+	msRTCPeerConnection
+);
+
+var RTCSessionDescription = (
+	RTCSessionDescription ||
+	webkitRTCSessionDescription ||
+	mozRTCSessionDescription ||
+	msRTCSessionDescription
+);
+
+var RTCIceCandidate = (
+	RTCIceCandidate ||
+	webkitRTCIceCandidate ||
+	mozRTCIceCandidate ||
+	msRTCIceCandidate
+);
+
+document.getElementById('debug').innerHTML += 'begin<br>';
+console.log(navigator.userAgent);
+document.getElementById('debug').innerHTML += navigator.userAgent + '<br>';	  
+  
+if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
+	document.getElementById('debug').innerHTML += 'mobile<br>';}
+	  else {document.getElementById('debug').innerHTML += 'desktop<br>';}
+
+
+function hasUserMedia() { 
+   //check if the browser supports the WebRTC 
+   return !!(navigator.getUserMedia || navigator.webkitGetUserMedia || 
+      navigator.mozGetUserMedia); 
+}
+	  if (hasUserMedia){document.getElementById('debug').innerHTML += 'browser supports the WebRTC <br>';}
+	  else document.getElementById('debug').innerHTML += 'browser does not support the WebRTC <br>';
+	  
+function enterID_click() {
+	id = prompt('Enter ID:');
+	if (id !== '') {
+		console.log('Creating or joining room ' + id + '...');
+		socket.emit('room', id);
+		} 
+	}
+
+function getUserMedia_click(){
+	document.getElementById('logs').innerHTML="getUserMedia is clicked";
+	PeerConnection();
+	getUserMedia();
+}
+
+
+function PeerConnection(){
+pc = new RTCPeerConnection(servers);
+if (pc) {
+	console.log('pc is created');
+	document.getElementById('debug').innerHTML += 'pc is created<br>';
+	console.log(pc);
+
+		pc.onicecandidate = function (e)
+		{
+			console.log("ICE candidate:");
+			console.log(e.candidate);
+			document.getElementById('debug').innerHTML += 'ICE candidate:<br>';
+			if (e.candidate){document.getElementById('debug').innerHTML += e.candidate.candidate + '<br>';}
+			else {document.getElementById('debug').innerHTML += ' Candidate is null<br>';}
+			//console.log(e.type);
+			socket.emit("message", {type: "candidate", candidate: e.candidate});
+			//socket.emit("message", e);
+		};
+
+		pc.onaddstream = function(e) {
+		console.log("Stream received!");
+		console.log(e.stream);
+		document.getElementById('debug').innerHTML += 'Stream received!<br>';
+
+		remoteVideo.autoplay = true;
+		remoteVideo.muted = true;
+
+			// Older browsers may not have srcObject
+			if ('srcObject' in remoteVideo) {
+			  remoteVideo.srcObject = e.stream;
+			} else {
+			  // Avoid using this in new browsers, as it is going away.
+			  remoteVideo.src = URL.createObjectURL(e.stream);
+			}			
+					
+							
+		};
+
+		pc.oniceconnectionstatechange = function (e)
+		{
+			console.log('oniceconnectionstatechange');
+			console.log(e.target);
+			document.getElementById('connection').innerHTML = e.target.iceConnectionState + " ... " + e.target.iceGatheringState;
+		};
+	
+		}
+	else {
+		console.log('error: pc is not created. please creat pc.');
+		document.getElementById('debug').innerHTML += 'error: pc is not created. please creat pc.<br>';
+
+		}
+}
+
+function getUserMedia(){
+	navigator.getUserMedia(mediaConstraints,
+		function (stream)
+		{
+			
+			console.log("MediaStream is created");
+			console.log(stream);
+			document.getElementById('debug').innerHTML += 'MediaStream is created<br>';
+		
+			 
+			localVideo.autoplay = true;
+   			localVideo.muted = true;
+			
+			// Older browsers may not have srcObject
+			if ('srcObject' in localVideo) {
+			  localVideo.srcObject = stream;
+			} else {
+			  // Avoid using this in new browsers, as it is going away.
+			  localVideo.src = URL.createObjectURL(stream);
+			}			
+		
+
+
+			//localStream = stream;
+			//console.log(stream.getTracks()[0]);
+			//console.log(stream.getTracks()[1]);
+			//pc.addStream(stream);
+			stream.getTracks().forEach(function(track) { pc.addTrack(track, stream) });
+				
+				console.log("MediaStream is added");
+				logs = document.getElementById('logs');
+				logs.innerHTML="MediaStream is added";
+				document.getElementById('debug').innerHTML += 'MediaStream is added<br>';
+
+
+		},
+		function (err)
+		{
+			console.error(err);
+			document.getElementById('debug').innerHTML += err + '<br>';
+
+		}
+	);
+}
+
+
+function createOffer_click(){	
+if (pc)	{
+		document.getElementById('logs').innerHTML="Offer is sended";
+		document.getElementById('debug').innerHTML += 'Offer is sended<br>';
+		pc.createOffer(
+			function(desc)
+			{
+				console.log('createOffer');
+				document.getElementById('debug').innerHTML += 'createOffer<br>';
+				pc.setLocalDescription(desc);
+				console.log('setLocalDescription');
+				document.getElementById('debug').innerHTML += 'setLocalDescription<br>';
+				console.log(desc);
+				socket.emit("message", desc);
+			},
+			function(err)
+			{
+				console.error(err);
+				document.getElementById('debug').innerHTML += err +'<br>';
+			}
+		);
+		}
+		else {
+			console.log('error: pc is not created. please creat pc.');
+			document.getElementById('debug').innerHTML += 'error: pc is not created. please creat pc.<br>';
+			}
+
+		
+}
+
+function AudioOff_click(){
+	document.getElementById('remoteVideo').muted = true;
+	document.getElementById('logs').innerHTML = 'Audio is off';
+
+}
+
+function AudioOn_click(){
+	document.getElementById('remoteVideo').muted = false;
+	document.getElementById('logs').innerHTML = 'Audio is on';
+
+}
+
+
+///////////////////
+socket.on('success', function ()
+{
+	console.log("socket.on connected");
+	document.getElementById('debug').innerHTML += 'socket.on connected<br>';
+	
+});
+
+
+socket.on('message', function(message)
+{
+	console.log("Message from server:");
+	console.log(message);
+	document.getElementById('debug').innerHTML += 'Message from server:<br>';
+	document.getElementById('debug').innerHTML += message + '<br>';
+	if (message.type){ document.getElementById('debug').innerHTML += 'message.type: ' + message.type + ', message.value: ' + message.value + '<br>'}
+
+	
+	if (message.type == "offer")
+	{
+			console.log('Offer is received:');
+			document.getElementById('debug').innerHTML += 'Offer is received:<br>';
+			document.getElementById('logs').innerHTML="Offer is received";
+
+			console.log(message);
+			if(pc){
+				pc.setRemoteDescription(new RTCSessionDescription(message));
+				console.log('setRemoteDescription');
+				console.log(message);
+				document.getElementById('debug').innerHTML += 'setRemoteDescription<br>';
+				
+				console.log('createAnswer');
+				document.getElementById('debug').innerHTML += 'createAnswer<br>';
+				pc.createAnswer
+				(function(desc)
+				{
+					pc.setLocalDescription(desc)
+					console.log('setLocalDescription');
+					console.log(desc);
+					document.getElementById('debug').innerHTML += 'setLocalDescription<br>';
+					socket.emit("message", desc);
+					document.getElementById('logs').innerHTML="Answer is sended";
+
+				}, 
+				function(err)
+				{
+					console.error(err);
+					document.getElementById('debug').innerHTML += err + '<br>';
+				}
+			);
+			}
+	}
+
+	if (message.type == "answer")
+	{
+		if (pc){
+			pc.setRemoteDescription(new RTCSessionDescription(message));
+			console.log('setRemoteDescription');
+			console.log(message);
+			document.getElementById('debug').innerHTML += 'setRemoteDescription<br>';
+			document.getElementById('logs').innerHTML="Aswer is received";
+
+			}
+	}
+
+
+	if (message.type == "candidate")
+	{
+			if (message.candidate)
+			{
+				console.log('IceCandidate is received:');
+				document.getElementById('debug').innerHTML += 'IceCandidate is received:<br>';
+				console.log(message.candidate);
+				if (pc) {
+					pc.addIceCandidate(new RTCIceCandidate(message.candidate));
+					console.log('new IceCandidate is added');
+					document.getElementById('debug').innerHTML += 'new IceCandidate is added<br>';
+					}
+			}
+	}
+	
+});
+
+
+socket.on('error', function(err)
+{
+	console.error(err);
+	document.getElementById('debug').innerHTML = err + '<br>';
+});
+
+  
+  
+  </script>
+
+
+  
+</body>
+</html>
