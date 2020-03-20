@@ -224,7 +224,6 @@ function getUserMedia_success(stream){
 			socket.emit('room', id);
 			
 		} 
-			document.getElementById('debug').innerHTML += 'HERE 1<br>';
 		
 	createOffer();
 	}
@@ -346,9 +345,9 @@ function getStream(stream)
 
 function addLocalStream(stream)
 	{
-	
-		stream.getTracks().forEach(function(track) { pc.addTrack(track, stream) });
-			
+			document.getElementById('debug').innerHTML += 'HERE 1<br>';
+		//stream.getTracks().forEach(function(track) { pc.addTrack(track, stream) });
+		pc.addStream(localStream);
 		console.log("MediaStream is added");
 		//logs.innerHTML="MediaStream is added";
 		document.getElementById('debug').innerHTML += 'MediaStream is added<br>';
@@ -367,8 +366,6 @@ function Error(err)
 function createOffer(){	
 	document.getElementById('btn_createOffer').style.display='none';
 	
-	document.getElementById('debug').innerHTML += 'HERE 2<br>';
-
 	
 	if (connection_type == 'connection_type_1') {
 		document.getElementById('btn_AudioOn').style.display='inline-block';
