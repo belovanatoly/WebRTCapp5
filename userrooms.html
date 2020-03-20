@@ -6,7 +6,7 @@
     body { text-align:center;}
     video { height: 240px; width: 320px; border: 1px solid grey; margin-top:20px; display:none; }
 	#logs { margin-top: 20px;}
-    #debug {  }
+    #debug { display:none; }
     button { display:none; }
 	#Line_Number_Enter{ display:none; border:1px solid black; padding:20px 40px;  }
 	input { text-align:center;}
@@ -61,15 +61,15 @@ var id;
 var connection_type;
 
 var pc = null;
-//var servers = null;
+var servers = null;
 
-
+/*
 var servers = {"iceServers": 
 	    [
             {"url": "stun:stun.l.google.com:19302"}
 	    ]
         };
-
+*/
 		
 navigator.getUserMedia = (
 	navigator.getUserMedia ||
@@ -131,10 +131,14 @@ function start (){
 
 function Line_Number_Enter(){
 	document.getElementById('Line_Number_Enter').style.display='none';
+	document.getElementById('debug').innerHTML += 'Line_Number_Enter<br>';
 	id = document.getElementById('inp_1').value;
 	console.log('Line is ' + id);
 	connection_type = document.querySelector('input[name="radio"]:checked').value;
 	console.log('connection_type is ' + connection_type);
+	
+	document.getElementById('debug').innerHTML += 'Line is ' + id + '<br>';
+	document.getElementById('debug').innerHTML += 'connection_type is ' + connection_type + '<br>';
 	
 	if (connection_type == 'connection_type_1') {mediaConstraints = {audio: true, video: false}}
 	if (connection_type == 'connection_type_2') {mediaConstraints = {audio: false, video: true}}
