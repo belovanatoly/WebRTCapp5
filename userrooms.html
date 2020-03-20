@@ -224,6 +224,8 @@ function getUserMedia_success(stream){
 			socket.emit('room', id);
 			
 		} 
+			document.getElementById('debug').innerHTML += 'HERE 1<br>';
+		
 	createOffer();
 	}
 
@@ -364,6 +366,9 @@ function Error(err)
 
 function createOffer(){	
 	document.getElementById('btn_createOffer').style.display='none';
+	
+	document.getElementById('debug').innerHTML += 'HERE 2<br>';
+
 	
 	if (connection_type == 'connection_type_1') {
 		document.getElementById('btn_AudioOn').style.display='inline-block';
