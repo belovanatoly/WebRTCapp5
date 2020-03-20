@@ -6,7 +6,7 @@
     body { text-align:center;}
     video { height: 240px; width: 320px; border: 1px solid grey; margin-top:20px; display:none; }
 	#logs { margin-top: 20px;}
-    #debug {  }
+    #debug { display: none;  }
     button { display:none; }
 	#Line_Number_Enter{ display:none; border:1px solid black; padding:20px 40px;  }
 	input { text-align:center;}
@@ -105,7 +105,9 @@ console.log(navigator.userAgent);
 document.getElementById('debug').innerHTML += navigator.userAgent + '<br>';	  
   
 if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
-	document.getElementById('debug').innerHTML += 'mobile<br>';}
+	document.getElementById('debug').innerHTML += 'mobile<br>';
+	document.getElementById('Line_Number_Enter').style.width='100%';
+	}
 	  else {document.getElementById('debug').innerHTML += 'desktop<br>';}
 
 function hasUserMedia() { 
