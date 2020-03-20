@@ -480,7 +480,7 @@ socket.on('message', function(message)
 			}
 		if (message.value == 'disconnected'){
 			document.getElementById('logs').innerHTML = 'Другой абонент отключился от линии ' + message.room;
-			//document.getElementById('connection').innerHTML = '&nbsp';
+			document.getElementById('connection').innerHTML = '&nbsp';
 			
 			if (remoteVideo.srcObject) {
 				  remoteVideo.srcObject.getTracks().forEach(function(track){track.stop()});
