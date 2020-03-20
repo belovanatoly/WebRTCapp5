@@ -6,7 +6,7 @@
     body { text-align:center;}
     video { height: 240px; width: 320px; border: 1px solid grey; margin-top:20px; display:none; }
 	#logs { margin-top: 20px;}
-    #debug {}
+    #debug {  }
     button { display:none; }
 	#Line_Number_Enter{ display:none; border:1px solid black; padding:20px 40px;  }
 	input { text-align:center;}
@@ -143,7 +143,25 @@ function Line_Number_Enter(){
 	if (connection_type == 'connection_type_1') {mediaConstraints = {audio: true, video: false}}
 	if (connection_type == 'connection_type_2') {mediaConstraints = {audio: false, video: true}}
 	if (connection_type == 'connection_type_3') {mediaConstraints = {audio: true, video: true}}
+	
+	console.log(mediaConstraints);
+	
+	if (id){
+	document.getElementById('debug').innerHTML += 'to getUserMedia<br>';
+	navigator.getUserMedia(mediaConstraints, getUserMedia_success
+		,
+		function (err)
+		{
+			Error (err);
+			document.getElementById('logs').innerHTML += '<br>Media is not created';
+		}
+	);
+		} else {
+			alert ('Необходимо указать\nномер линии');
+			start();
+			}
 
+/*
 	if (id){	
 		navigator.mediaDevices.getUserMedia(mediaConstraints)
 		.then(getUserMedia_success)
@@ -157,8 +175,8 @@ function Line_Number_Enter(){
 			start();
 			}
 
+*/
 }
-
 	  
 function go_click() 
 	{
