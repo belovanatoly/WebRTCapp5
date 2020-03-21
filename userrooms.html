@@ -422,11 +422,23 @@ function createOffer_click(){
 function HangUp_click(){
 	console.log('HangUp is clicked');
 	document.getElementById('logs').innerHTML = 'Вы нажали Разъединить';
+	
+	// Older browsers may not have srcObject
+	if ('srcObject' in remoteVideo) 
+		{
+			remoteVideo.srcObject = null;
+		} else 
+			{
+			 // Avoid using this in new browsers, as it is going away.
+			remoteVideo.src = null;
+			}			
+	
+/*	
 	if (remoteVideo.srcObject) {
 		  remoteVideo.srcObject.getTracks().forEach(function(track){track.stop()});
 		  remoteVideo.srcObject = null;
 			}
-		
+*/		
 		pc.close();
 		pc = null;
 		socket.emit('message','HangUp');
@@ -482,12 +494,24 @@ socket.on('message', function(message)
 		if (message.value == 'disconnected'){
 			document.getElementById('logs').innerHTML = 'Другой абонент отключился от линии ' + message.room;
 			document.getElementById('connection').innerHTML = '&nbsp';
-			
+
+		// Older browsers may not have srcObject
+		if ('srcObject' in remoteVideo) 
+			{
+				remoteVideo.srcObject = null;
+			} else 
+				{
+				 // Avoid using this in new browsers, as it is going away.
+				remoteVideo.src = null;
+				}			
+
+
+/*			
 			if (remoteVideo.srcObject) {
 				  remoteVideo.srcObject.getTracks().forEach(function(track){track.stop()});
 				  remoteVideo.srcObject = null;
 					}
-				
+*/				
 				if (pc) {
 					pc.close();
 					pc = null;
