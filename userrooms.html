@@ -494,7 +494,7 @@ socket.on('message', function(message)
 		if (message.value == 'disconnected'){
 			document.getElementById('logs').innerHTML = 'Другой абонент отключился от линии ' + message.room;
 			document.getElementById('connection').innerHTML = '&nbsp';
-/*
+
 		// Older browsers may not have srcObject
 		if ('srcObject' in remoteVideo) 
 			{
@@ -504,7 +504,7 @@ socket.on('message', function(message)
 				 // Avoid using this in new browsers, as it is going away.
 				//remoteVideo.src = null;
 				}			
-*/
+
 
 /*			
 			if (remoteVideo.srcObject) {
