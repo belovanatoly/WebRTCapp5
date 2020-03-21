@@ -122,7 +122,7 @@ function hasUserMedia() {
 if (!!navigator.getUserMedia){document.getElementById('debug').innerHTML += 'browser supports the WebRTC <br>';}
   else document.getElementById('debug').innerHTML += 'browser does not support the WebRTC <br>';
 
-if (!!navigator.mediaDevices.getUserMedia){document.getElementById('debug').innerHTML += 'browser supports mediaDevices <br>';}
+if (navigator.mediaDevices.getUserMedia){document.getElementById('debug').innerHTML += 'browser supports mediaDevices <br>';}
   else document.getElementById('debug').innerHTML += 'browser does not support mediaDevices <br>';
 
 		
