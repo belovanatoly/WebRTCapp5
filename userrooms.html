@@ -6,7 +6,7 @@
     body { text-align:center;}
     video { height: 240px; width: 320px; border: 1px solid grey; margin-top:20px; display:none; }
 	#logs { margin-top: 20px;}
-    #debug { display: inline-block;  }
+    #debug {  }
     button { display:none; }
 	#Line_Number_Enter{ display:none; border:1px solid black; padding:20px 40px;  }
 	input { text-align:center;}
@@ -23,17 +23,16 @@
 <h1>GLOBAL.ONE</h1>
 
 <div id="Line_Number_Enter">
-<p><label for="inp_1">Укажите номер линии:</label></p>
+<p><label for="inp_1">Введите номер линии:</label></p>
 <p><input type="text" id="inp_1" class="validate[required]" ></p>
 <p class='left'><input name="radio" type="radio" value="connection_type_1" >Только Аудио</p>
 <p class='left'><input name="radio" type="radio" value="connection_type_2">Только Видео</p>
 <p class='left'><input name="radio" type="radio" value="connection_type_3" checked >Аудио + Видео</p>
 <p><button id="btn_Line_Number_Enter" onclick="Line_Number_Enter()">Вызов</button></p>
 </div>
-<!--
+
   <button id="btn_go" onclick="go_click()">Подключиться</br>к линии</button>
   <button id="btn_getUserMedia" onclick="getUserMedia_click()">getUserMedia</button>
- --> 
   <button id="btn_createOffer" onclick="createOffer_click()">Соединить</button>
   <button id="btn_AudioOn" onclick="AudioOn_click()">Включить звук</button>
   <button id="btn_AudioOff" onclick="AudioOff_click()">Выключить звук</button>
@@ -43,16 +42,17 @@
   <video id="remoteVideo"></video>
   <div id='logs'>&nbsp;</div>
   <div id='connection'>&nbsp;</div>
-  <div id='debug'><p>Console:</p></div>
+  <div id='debug'><br>Console:<br></div>
  
   <script type="text/javascript">
+
+console.log("begin");
 
 var socket = io.connect();
 
 var localVideo = document.getElementById('localVideo');
 var remoteVideo = document.getElementById('remoteVideo');
 var logs = document.getElementById('logs');
-var debug = document.getElementById('debug');
 
 var localStream;
 var mediaConstraints;
@@ -99,7 +99,6 @@ var RTCIceCandidate = (
 	msRTCIceCandidate
 );
 
-console.log("begin");
 document.getElementById('debug').innerHTML += 'begin<br>';
 
 console.log(navigator.userAgent);
@@ -112,22 +111,10 @@ if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
 
 function hasUserMedia() { 
 	//check if the browser supports the WebRTC 
-	return !!(navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia); 
+	return !!(navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia); 
 	}
 	  if (hasUserMedia){document.getElementById('debug').innerHTML += 'browser supports the WebRTC <br>';}
-	  	else {
-			document.getElementById('debug').innerHTML += 'browser does not support the WebRTC <br>';
-			document.getElementById('logs').innerHTML += 'browser does not support the WebRTC <br>';
-			}
-
-var qwerty = !!navigator.mediaDevices.getUserMedia;
-document.getElementById('debug').innerHTML += qwerty + '<br>';
-/*
-	  if (navigator.mediaDevices.getUserMedia){document.getElementById('debug').innerHTML += 'browser supports mediaDevices<br>';}
-	  	else {
-			document.getElementById('debug').innerHTML += 'browser does not supports mediaDevices<br>';
-			}
-*/
+	  	else document.getElementById('debug').innerHTML += 'browser does not support the WebRTC <br>';
 		
 ///////////////////////////////////
 start();
@@ -145,10 +132,11 @@ function start (){
 
 function Line_Number_Enter(){
 	document.getElementById('Line_Number_Enter').style.display='none';
-	id = document.getElementById('inp_1').value;
-	connection_type = document.querySelector('input[name="radio"]:checked').value;
+	document.getElementById('debug').innerHTML += 'Line_Number_Enter<br>';
 
+	id = document.getElementById('inp_1').value;
 	console.log('Line is ' + id);
+	connection_type = document.querySelector('input[name="radio"]:checked').value;
 	console.log('connection_type is ' + connection_type);
 	
 	document.getElementById('debug').innerHTML += 'Line is ' + id + '<br>';
@@ -158,7 +146,10 @@ function Line_Number_Enter(){
 	if (connection_type == 'connection_type_2') {mediaConstraints = {audio: false, video: true}}
 	if (connection_type == 'connection_type_3') {mediaConstraints = {audio: true, video: true}}
 	
+	console.log(mediaConstraints);
+	
 	if (id){
+	document.getElementById('debug').innerHTML += 'to getUserMedia<br>';
 	navigator.getUserMedia(mediaConstraints, getUserMedia_success
 		,
 		function (err)
@@ -185,7 +176,6 @@ function Line_Number_Enter(){
 			alert ('Необходимо указать\nномер линии');
 			start();
 			}
-
 */
 }
 	  
