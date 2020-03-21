@@ -494,7 +494,7 @@ socket.on('message', function(message)
 		if (message.value == 'disconnected'){
 			document.getElementById('logs').innerHTML = 'Другой абонент отключился от линии ' + message.room;
 			document.getElementById('connection').innerHTML = '&nbsp';
-
+/*
 		// Older browsers may not have srcObject
 		if ('srcObject' in remoteVideo) 
 			{
@@ -502,9 +502,9 @@ socket.on('message', function(message)
 			} else 
 				{
 				 // Avoid using this in new browsers, as it is going away.
-				remoteVideo.src = null;
+				//remoteVideo.src = null;
 				}			
-
+*/
 
 /*			
 			if (remoteVideo.srcObject) {
@@ -512,10 +512,12 @@ socket.on('message', function(message)
 				  remoteVideo.srcObject = null;
 					}
 */				
+/*
 				if (pc) {
 					pc.close();
 					pc = null;
 					}
+*/
 				//new_pc();
 				//PeerConnection();
 				//addLocalStream(localStream);
