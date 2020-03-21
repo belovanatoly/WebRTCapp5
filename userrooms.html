@@ -422,7 +422,7 @@ function createOffer_click(){
 function HangUp_click(){
 	console.log('HangUp is clicked');
 	document.getElementById('logs').innerHTML = 'Вы нажали Разъединить';
-	document.getElementById('Connection').innerHTML = 'Соединение прервано';
+	document.getElementById('connection').innerHTML = 'Соединение прервано';
 	// Older browsers may not have srcObject
 	if ('srcObject' in remoteVideo) 
 		{
@@ -597,7 +597,7 @@ socket.on('message', function(message)
 	if (message == "HangUp"){
 		console.log('HangUp is clicked by other side');
 		document.getElementById('logs').innerHTML = 'Другой абонент нажал Разъединить';
-		document.getElementById('Connection').innerHTML = 'Соединение прервано';
+		document.getElementById('connection').innerHTML = 'Соединение прервано';
 		
 		// Older browsers may not have srcObject
 		if ('srcObject' in remoteVideo) 
