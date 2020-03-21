@@ -24,7 +24,7 @@
 
 <div id="Line_Number_Enter">
 <p><label for="inp_1">Введите номер линии:</label></p>
-<p><input type="text" id="inp_1" class="validate[required]" ></p>
+<p><input type="text" id="inp_1" ></p>
 <p class='left'><input name="radio" type="radio" value="connection_type_1" >Только Аудио</p>
 <p class='left'><input name="radio" type="radio" value="connection_type_2">Только Видео</p>
 <p class='left'><input name="radio" type="radio" value="connection_type_3" checked >Аудио + Видео</p>
@@ -39,6 +39,8 @@
   <button id="btn_AudioOn" onclick="AudioOn_click()">Включить звук</button>
   <button id="btn_AudioOff" onclick="AudioOff_click()">Выключить звук</button>
   <button id="btn_HangUp" onclick="HangUp_click()">Разъединить</button>
+  <button id="btn_ref" onclick="ref_click()">Получить ссылку</button>
+
   <br>
   <video id="localVideo"></video>
   <video id="remoteVideo"></video>
@@ -61,6 +63,7 @@ var mediaConstraints;
 
 var id;
 var connection_type;
+var line_status;
 
 var pc = null;
 //var servers = null;
@@ -127,8 +130,20 @@ start();
 function start (){
 	//document.getElementById('btn_go').style.display='inline-block';
 	//enterID_click();
+
 	document.getElementById('Line_Number_Enter').style.display='inline-block';
+		
+	if (getParam('id')) {
+		id = getParam('id');
+		document.getElementById('inp_1').value = id;
+		}
+	
 	}
+
+function getParam(param){
+	return new URLSearchParams(window.location.search).get(param);
+	}
+
 
 function Line_Number_Enter(){
 	document.getElementById('Line_Number_Enter').style.display='none';
@@ -226,7 +241,7 @@ function getUserMedia_success(stream){
 			
 		} 
 		
-	createOffer();
+	if (line_status !== 'full') {createOffer();}
 	}
 
 
@@ -378,6 +393,7 @@ function createOffer(){
 		}
 	
 	document.getElementById('btn_HangUp').style.display='inline-block';
+	document.getElementById('btn_ref').style.display='inline-block';
 	document.getElementById('connection').innerHTML = '';
 	
 	document.getElementById('logs').innerHTML = 'Вы нажали Соединить';
@@ -439,7 +455,7 @@ function HangUp_click(){
 		  remoteVideo.srcObject = null;
 			}
 */		
-		//pc.close();
+		pc.close();
 		pc = null;
 		socket.emit('message','HangUp');
 		document.getElementById('btn_AudioOn').style.display='none';
@@ -453,12 +469,16 @@ function HangUp_click(){
 function AudioOff_click(){
 	document.getElementById('remoteVideo').muted = true;
 	document.getElementById('logs').innerHTML = 'Звук выключен';
-}
+	}
 
 function AudioOn_click(){
 	document.getElementById('remoteVideo').muted = false;
 	document.getElementById('logs').innerHTML = 'Звук включен';
-}
+	}
+
+function ref_click(){
+	alert(window.location.host + window.location.pathname + '?id=' + id);
+	}
 
 
 ///////////////////
@@ -488,9 +508,15 @@ socket.on('message', function(message)
 			document.getElementById('connection').innerHTML = 'Соединяем...';
 			}
 		if (message.value == 'A second user is added'){
-			document.getElementById('logs').innerHTML = 'Поключился другой абонент.';
+			document.getElementById('logs').innerHTML = 'К линии ' + message.room + 'Поключился другой абонент.';
 			document.getElementById('connection').innerHTML = 'Соединяем...';
 			}
+		if (message.value == 'full'){
+			document.getElementById('logs').innerHTML = 'На линии ' + message.room + ' уже два абонента';
+			document.getElementById('connection').innerHTML = 'Линия занята, попробуйте позже';
+			line_status = 'full';
+			}
+
 		if (message.value == 'disconnected'){
 			document.getElementById('logs').innerHTML = 'Другой абонент отключился от линии ' + message.room;
 			document.getElementById('connection').innerHTML = '&nbsp';
@@ -514,7 +540,7 @@ socket.on('message', function(message)
 */				
 
 				if (pc) {
-					//pc.close(); samsung distroy
+					pc.close(); //samsung destroy
 					pc = null;
 					}
 
@@ -615,7 +641,7 @@ socket.on('message', function(message)
 				}
 */			
 		if (pc) {
-			//pc.close();
+			pc.close();
 			pc = null;
 			}
 		//new_pc();
