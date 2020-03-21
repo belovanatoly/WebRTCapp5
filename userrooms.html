@@ -6,7 +6,7 @@
     body { text-align:center;}
     video { height: 240px; width: 320px; border: 1px solid grey; margin-top:20px; display:none; }
 	#logs { margin-top: 20px;}
-    #debug { text-align:left; margin-left:10px;   }
+    #debug { text-align:left; margin-left:10px; display:none;   }
     button { display:none; }
 	#Line_Number_Enter{ display:none; border:1px solid black; padding:20px 40px;  }
 	input { text-align:center;}
@@ -347,7 +347,6 @@ function getStream(stream)
 
 function addLocalStream(stream)
 	{
-			document.getElementById('debug').innerHTML += 'HERE 1<br>';
 		//stream.getTracks().forEach(function(track) { pc.addTrack(track, stream) });
 		pc.addStream(localStream);
 		console.log("MediaStream is added");
@@ -423,7 +422,7 @@ function createOffer_click(){
 function HangUp_click(){
 	console.log('HangUp is clicked');
 	document.getElementById('logs').innerHTML = 'Вы нажали Разъединить';
-	
+	document.getElementById('Connection').innerHTML = 'Соединение прервано';
 	// Older browsers may not have srcObject
 	if ('srcObject' in remoteVideo) 
 		{
@@ -598,7 +597,8 @@ socket.on('message', function(message)
 	if (message == "HangUp"){
 		console.log('HangUp is clicked by other side');
 		document.getElementById('logs').innerHTML = 'Другой абонент нажал Разъединить';
-
+		document.getElementById('Connection').innerHTML = 'Соединение прервано';
+		
 		// Older browsers may not have srcObject
 		if ('srcObject' in remoteVideo) 
 			{
