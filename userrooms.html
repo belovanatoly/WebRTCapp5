@@ -120,11 +120,14 @@ function hasUserMedia() {
 			document.getElementById('logs').innerHTML += 'browser does not support the WebRTC <br>';
 			}
 
+var qwerty = !!navigator.mediaDevices.getUserMedia;
+document.getElementById('debug').innerHTML += qwerty + '<br>';
+/*
 	  if (navigator.mediaDevices.getUserMedia){document.getElementById('debug').innerHTML += 'browser supports mediaDevices<br>';}
 	  	else {
 			document.getElementById('debug').innerHTML += 'browser does not supports mediaDevices<br>';
 			}
-
+*/
 		
 ///////////////////////////////////
 start();
