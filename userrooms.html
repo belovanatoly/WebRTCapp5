@@ -111,12 +111,17 @@ if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
 	}
 	  else {document.getElementById('debug').innerHTML += 'desktop<br>';}
 
+/*
 function hasUserMedia() { 
 	//check if the browser supports the WebRTC 
 	return !!(navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia); 
 	}
 	  if (hasUserMedia){document.getElementById('debug').innerHTML += 'browser supports the WebRTC <br>';}
 	  	else document.getElementById('debug').innerHTML += 'browser does not support the WebRTC <br>';
+*/
+if (!!navigator.getUserMedia){document.getElementById('debug').innerHTML += 'browser supports the WebRTC <br>';}
+  else document.getElementById('debug').innerHTML += 'browser does not support the WebRTC <br>';
+
 		
 ///////////////////////////////////
 start();
