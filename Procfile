@@ -1,1 +1,1 @@
-web: node serverrooms.js
+web: node server.js

@@ -1,37 +1,673 @@
 <html>
-
 <head>
-
 <meta charset="utf-8">
-<title>DEMO</title>
+<title>user</title>
+  <style>
+    body { text-align:center;}
+    video { height: 240px; width: 320px; border: 1px solid grey; margin-top:20px; display:none; }
+	#logs { margin-top: 20px;}
+    #debug { text-align:left; margin-left:10px; display:none;   }
+    button { display:none; }
+	#Line_Number_Enter{ display:none; border:1px solid black; padding:20px 40px;  }
+	input { text-align:center;}
+	#btn_Line_Number_Enter{ display:inline-block; margin-top:10px; }
+	p.left { text-align:left;}
+	
+  </style>
+  <script src="/socket.io/socket.io.js"></script>
 </head>
 
-
 <body>
-	
-<script type="text/javascript">console.log("begin");</script>
-<script src="/socket.io/socket.io.js"></script>
 
-<p>hallo</p>
-<p><a href="/sender.html" target="_blank">sender</a></p>
-<p><a href="/receiver.html" target="_blank">receiver</a></p>
-<p><a href="/user.html" target="_blank">user</a></p>
 
-<script type="text/javascript">
+<h1>GLOBAL.ONE</h1>
+
+<div id="Line_Number_Enter">
+<p><label for="inp_1">Введите номер линии:</label></p>
+<p><input type="text" id="inp_1" ></p>
+<p class='left'><input name="radio" type="radio" value="connection_type_1" >Только Аудио</p>
+<p class='left'><input name="radio" type="radio" value="connection_type_2">Только Видео</p>
+<p class='left'><input name="radio" type="radio" value="connection_type_3" checked >Аудио + Видео</p>
+<p><button id="btn_Line_Number_Enter" onclick="Line_Number_Enter()">Вызов</button></p>
+</div>
+<!--
+  <button id="btn_go" onclick="go_click()">Подключиться</br>к линии</button>
+  <button id="btn_getUserMedia" onclick="getUserMedia_click()">getUserMedia</button>
+ --> 
+  
+  <button id="btn_createOffer" onclick="createOffer_click()">Соединить</button>
+  <button id="btn_AudioOn" onclick="AudioOn_click()">Включить звук</button>
+  <button id="btn_AudioOff" onclick="AudioOff_click()">Выключить звук</button>
+  <button id="btn_HangUp" onclick="HangUp_click()">Разъединить</button>
+  <button id="btn_ref" onclick="ref_click()">Получить ссылку</button>
+
+  <br>
+  <video id="localVideo"></video>
+  <video id="remoteVideo"></video>
+  <div id='logs'>&nbsp;</div>
+  <div id='connection'>&nbsp;</div>
+  <div id='debug'><br>Console:<br></div>
+ 
+  <script type="text/javascript">
+
+console.log("begin");
 
 var socket = io.connect();
 
+var localVideo = document.getElementById('localVideo');
+var remoteVideo = document.getElementById('remoteVideo');
+var logs = document.getElementById('logs');
+
+var localStream;
+var mediaConstraints;
+
+var id;
+var connection_type;
+var line_status;
+
+var pc = null;
+//var servers = null;
+
+
+var servers = {"iceServers": 
+	    [
+            {"url": "stun:stun.l.google.com:19302"}
+	    ]
+        };
+
+		
+navigator.getUserMedia = (
+	navigator.getUserMedia ||
+	navigator.webkitGetUserMedia ||
+	navigator.mozGetUserMedia ||
+	navigator.msGetUserMedia
+);
+
+var RTCPeerConnection = (
+	RTCPeerConnection ||
+	webkitRTCPeerConnection ||
+	mozRTCPeerConnection ||
+	msRTCPeerConnection
+);
+
+var RTCSessionDescription = (
+	RTCSessionDescription ||
+	webkitRTCSessionDescription ||
+	mozRTCSessionDescription ||
+	msRTCSessionDescription
+);
+
+var RTCIceCandidate = (
+	RTCIceCandidate ||
+	webkitRTCIceCandidate ||
+	mozRTCIceCandidate ||
+	msRTCIceCandidate
+);
+
+document.getElementById('debug').innerHTML += 'begin<br>';
+
+console.log(navigator.userAgent);
+document.getElementById('debug').innerHTML += navigator.userAgent + '<br>';	  
+  
+if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
+	document.getElementById('debug').innerHTML += 'mobile<br>';
+	}
+	  else {document.getElementById('debug').innerHTML += 'desktop<br>';}
+
+if (!!navigator.getUserMedia){document.getElementById('debug').innerHTML += 'browser supports the WebRTC <br>';}
+  else document.getElementById('debug').innerHTML += 'browser does not support the WebRTC <br>';
+
+
+		
+///////////////////////////////////
+start();
+
+
+
+
+//////////////////////////////////
+
+function start (){
+	//document.getElementById('btn_go').style.display='inline-block';
+	//enterID_click();
+
+	document.getElementById('Line_Number_Enter').style.display='inline-block';
+		
+	if (getParam('id')) {
+		id = getParam('id');
+		document.getElementById('inp_1').value = id;
+		}
+	
+	}
+
+function getParam(param){
+	return new URLSearchParams(window.location.search).get(param);
+	}
+
+
+function Line_Number_Enter(){
+	document.getElementById('Line_Number_Enter').style.display='none';
+	document.getElementById('debug').innerHTML += 'Line_Number_Enter<br>';
+
+	id = document.getElementById('inp_1').value;
+	console.log('Line is ' + id);
+	connection_type = document.querySelector('input[name="radio"]:checked').value;
+	console.log('connection_type is ' + connection_type);
+	
+	document.getElementById('debug').innerHTML += 'Line is ' + id + '<br>';
+	document.getElementById('debug').innerHTML += 'connection_type is ' + connection_type + '<br>';
+	
+	if (connection_type == 'connection_type_1') {mediaConstraints = {audio: true, video: false}}
+	if (connection_type == 'connection_type_2') {mediaConstraints = {audio: false, video: true}}
+	if (connection_type == 'connection_type_3') {mediaConstraints = {audio: true, video: true}}
+	
+	console.log(mediaConstraints);
+	
+	if (id){
+	document.getElementById('debug').innerHTML += 'to getUserMedia<br>';
+	navigator.getUserMedia(mediaConstraints, getUserMedia_success
+		,
+		function (err)
+		{
+			Error (err);
+			document.getElementById('logs').innerHTML += '<br>Media is not created';
+		}
+	);
+		} else {
+			alert ('Необходимо указать\nномер линии');
+			start();
+			}
+	}
+/*
+	if (id){	
+		navigator.mediaDevices.getUserMedia(mediaConstraints)
+		.then(getUserMedia_success)
+		.catch(function(err){
+			Error (err);
+			document.getElementById('logs').innerHTML += '<br>Media is not created';
+			//document.getElementById('btn_getUserMedia').style.display='inline-block';
+			});
+		} else {
+			alert ('Необходимо указать\nномер линии');
+			start();
+			}
+*/
+
+/*	  
+function go_click() 
+	{
+		document.getElementById('btn_go').style.display='none';
+		enterID();
+		
+		navigator.mediaDevices.getUserMedia(mediaConstraints)
+		.then(getUserMedia_success)
+//		.then (function()
+//			{
+//				document.getElementById('btn_createOffer').style.display='inline-block';
+//			})
+		.catch(function(err){
+			Error (err);
+	  		document.getElementById('logs').innerHTML += '<br>Media is not created';
+			//document.getElementById('btn_getUserMedia').style.display='inline-block';
+
+			});
+		
+	}
+*/
+
+
+/*
+function getUserMedia_click()
+	{
+		document.getElementById('logs').innerHTML="getUserMedia is clicked";
+		new_pc();
+		PeerConnection();
+		getUserMedia();
+	}
+*/
+
+/*
+function enterID() {
+	id = prompt('Наберите номер линии:');
+	}	
+*/	
+function getUserMedia_success(stream){
+	getStream(stream);
+		if (id !== '') 
+		{
+			console.log('Creating or joining room ' + id + '...');
+			document.getElementById('debug').innerHTML += 'Creating or joining room ' + id + '...<br>';
+			socket.emit('room', id);
+			
+		} 
+		
+	if (line_status !== 'full') {createOffer();}
+	}
+
+
+function new_pc()
+	{
+		pc = new RTCPeerConnection(servers);
+		if (pc) 
+			{
+				console.log('pc is created');
+				document.getElementById('debug').innerHTML += 'pc is created<br>';
+				console.log(pc);
+			}
+	}
+
+
+function PeerConnection()
+	{
+		if (pc) 
+			{
+				pc.onicecandidate = function (e)
+					{
+						console.log("ICE candidate:");
+						console.log(e.candidate);
+						document.getElementById('debug').innerHTML += 'ICE candidate:<br>';
+						if (e.candidate){document.getElementById('debug').innerHTML += e.candidate.candidate + '<br>';}
+						else {document.getElementById('debug').innerHTML += ' Candidate is null<br>';}
+						socket.emit("message", {type: "candidate", candidate: e.candidate});
+					}
+		
+				pc.onaddstream = function(e) 
+					{
+						console.log("Stream received!");
+						console.log(e.stream);
+						document.getElementById('debug').innerHTML += 'Stream received!<br>';
+						remoteVideo.autoplay = true;
+						remoteVideo.muted = false;
+						//if (connection_type == '2') {remoteVideo.style.display='inline-block';}
+						//if (connection_type == '3') {remoteVideo.style.display='inline-block';}
+
+				
+						// Older browsers may not have srcObject
+						if ('srcObject' in remoteVideo) 
+							{
+								remoteVideo.srcObject = e.stream;
+							} else 
+								{
+								 // Avoid using this in new browsers, as it is going away.
+								remoteVideo.src = URL.createObjectURL(e.stream);
+								}			
+					}
+		
+				pc.oniceconnectionstatechange = function (e)
+				{
+					console.log('oniceconnectionstatechange');
+					console.log(e.target);
+					document.getElementById('connection').innerHTML = e.target.iceConnectionState;
+					
+					if (e.target.iceConnectionState == 'connected'){
+						document.getElementById('logs').innerHTML = 'Вы подключены к линии ' + id;
+						document.getElementById('connection').innerHTML = 'Соединение установлено';
+						}
+					if (e.target.iceConnectionState == 'closed'){
+						//document.getElementById('logs').innerHTML = 'Вы подключены к линии ' + id;
+						document.getElementById('connection').innerHTML = 'Соединение прервано';
+						}
+					document.getElementById('debug').innerHTML += e.target.iceConnectionState + '<br>';
+				}
+			console.log('peer connection methods is done');	
+			document.getElementById('debug').innerHTML += 'peer connection methods is done<br>';
+			} else 
+				{
+					console.log('Error: pc is not created.');
+					document.getElementById('debug').innerHTML += 'Error: pc is not created.<br>';
+				}
+}
+
+/*
+function getUserMedia()
+	{
+	  //navigator.getUserMedia(mediaConstraints, gotStream, Error);
+	  	navigator.mediaDevices.getUserMedia(mediaConstraints)
+		.then(getStream)
+		.catch(Error);
+	}
+*/
+
+
+function getStream(stream)
+	{
+		console.log("MediaStream is created");
+		console.log(stream);
+		document.getElementById('debug').innerHTML += 'MediaStream is created<br>';
+		 
+		localVideo.autoplay = true;
+		localVideo.muted = true;
+		
+		if (connection_type == 'connection_type_2') {
+			localVideo.style.display='inline-block';
+			remoteVideo.style.display='inline-block';
+			}
+		if (connection_type == 'connection_type_3') {
+			localVideo.style.display='inline-block';
+			remoteVideo.style.display='inline-block';
+			}
+		
+		
+		// Older browsers may not have srcObject
+		if ('srcObject' in localVideo) 
+			{
+			  localVideo.srcObject = stream;
+			} else 
+			  {
+				  // Avoid using this in new browsers, as it is going away.
+				  localVideo.src = URL.createObjectURL(stream);
+				}			
+		localStream = stream;
+	}
+
+function addLocalStream(stream)
+	{
+		//stream.getTracks().forEach(function(track) { pc.addTrack(track, stream) });
+		pc.addStream(localStream);
+		console.log("MediaStream is added");
+		//logs.innerHTML="MediaStream is added";
+		document.getElementById('debug').innerHTML += 'MediaStream is added<br>';
+	
+	}
+
+
+function Error(err)
+	{
+		console.error(err);
+		document.getElementById('debug').innerHTML += err + '<br>';
+	}
+
+
+
+function createOffer(){	
+	document.getElementById('btn_createOffer').style.display='none';
+	
+	
+	if (connection_type == 'connection_type_1') {
+		document.getElementById('btn_AudioOn').style.display='inline-block';
+		document.getElementById('btn_AudioOff').style.display='inline-block';
+		}
+		if (connection_type == 'connection_type_3') {
+		document.getElementById('btn_AudioOn').style.display='inline-block';
+		document.getElementById('btn_AudioOff').style.display='inline-block';
+		}
+	
+	document.getElementById('btn_HangUp').style.display='inline-block';
+	document.getElementById('btn_ref').style.display='inline-block';
+	document.getElementById('connection').innerHTML = '';
+	
+	document.getElementById('logs').innerHTML = 'Вы нажали Соединить';
+	document.getElementById('connection').innerHTML = 'Соединяем...';
+	
+	new_pc();
+	if (pc)	{
+			PeerConnection();
+			addLocalStream(localStream);
+			
+			pc.createOffer(
+				function(desc)
+				{
+					console.log('createOffer');
+					document.getElementById('debug').innerHTML += 'createOffer<br>';
+					pc.setLocalDescription(desc);
+					console.log('setLocalDescription');
+					document.getElementById('debug').innerHTML += 'setLocalDescription<br>';
+					console.log(desc);
+					socket.emit("message", desc);
+				},
+				function(err)
+				{
+					console.error(err);
+					document.getElementById('debug').innerHTML += err + '<br>';
+				}
+			);
+			//document.getElementById('logs').innerHTML="Offer is sended";
+			document.getElementById('debug').innerHTML += 'Offer is sended<br>';
+			}
+			else {
+				console.log('error: pc is not created. please creat pc.');
+				document.getElementById('debug').innerHTML += 'error: pc is not created. please creat pc.<br>';
+				}
+	}
+
+function createOffer_click(){
+	createOffer()
+	}
+
+
+function HangUp_click(){
+	console.log('HangUp is clicked');
+	document.getElementById('logs').innerHTML = 'Вы нажали Разъединить';
+	document.getElementById('connection').innerHTML = 'Соединение прервано';
+	// Older browsers may not have srcObject
+	if ('srcObject' in remoteVideo) 
+		{
+			remoteVideo.srcObject = null;
+		} else 
+			{
+			 // Avoid using this in new browsers, as it is going away.
+			remoteVideo.src = null;
+			}			
+	
+/*	
+	if (remoteVideo.srcObject) {
+		  remoteVideo.srcObject.getTracks().forEach(function(track){track.stop()});
+		  remoteVideo.srcObject = null;
+			}
+*/		
+		pc.close();
+		pc = null;
+		socket.emit('message','HangUp');
+		document.getElementById('btn_AudioOn').style.display='none';
+		document.getElementById('btn_AudioOff').style.display='none';
+		document.getElementById('btn_HangUp').style.display='none';
+		document.getElementById('btn_createOffer').style.display='inline-block';
+
+	}
+
+
+function AudioOff_click(){
+	document.getElementById('remoteVideo').muted = true;
+	document.getElementById('logs').innerHTML = 'Звук выключен';
+	}
+
+function AudioOn_click(){
+	document.getElementById('remoteVideo').muted = false;
+	document.getElementById('logs').innerHTML = 'Звук включен';
+	}
+
+function ref_click(){
+	alert('https://' + window.location.host + window.location.pathname + '?id=' + id);
+	}
+
+
+///////////////////
 socket.on('success', function ()
 {
 	console.log("socket.on connected");
+	document.getElementById('debug').innerHTML += 'socket.on connected<br>';
+	
 });
 
 
-</script>
+socket.on('message', function(message)
+{
+	console.log("Message from server:");
+	console.log(message);
+	document.getElementById('debug').innerHTML += 'Message from server:<br>';
+	document.getElementById('debug').innerHTML += message + '<br>';
+	if (message.type){ document.getElementById('debug').innerHTML += 'message.type: ' + message.type + ', message.value: ' + message.value + '<br>'}
+
+	if (message.type == "room"){
+		if (message.value == 'created'){
+			document.getElementById('logs').innerHTML = 'Вы подключены к линии ' + message.room;
+			document.getElementById('connection').innerHTML = 'Другой абонент еще не на линии';
+			}
+		if (message.value == 'joined'){
+			document.getElementById('logs').innerHTML = 'Вы подключены к линии ' + message.room ;
+			document.getElementById('connection').innerHTML = 'Соединяем...';
+			}
+		if (message.value == 'A second user is added'){
+			document.getElementById('logs').innerHTML = 'К линии ' + message.room + 'Поключился другой абонент.';
+			document.getElementById('connection').innerHTML = 'Соединяем...';
+			}
+		if (message.value == 'full'){
+			document.getElementById('logs').innerHTML = 'На линии ' + message.room + ' уже два абонента';
+			document.getElementById('connection').innerHTML = 'Линия занята, попробуйте позже';
+			line_status = 'full';
+			}
+
+		if (message.value == 'disconnected'){
+			document.getElementById('logs').innerHTML = 'Другой абонент отключился от линии ' + message.room;
+			document.getElementById('connection').innerHTML = '&nbsp';
+
+		// Older browsers may not have srcObject
+		if ('srcObject' in remoteVideo) 
+			{
+				remoteVideo.srcObject = null;
+			} else 
+				{
+				 // Avoid using this in new browsers, as it is going away.
+				remoteVideo.src = null;
+				}			
 
 
+/*			
+			if (remoteVideo.srcObject) {
+				  remoteVideo.srcObject.getTracks().forEach(function(track){track.stop()});
+				  remoteVideo.srcObject = null;
+					}
+*/				
+
+				if (pc) {
+					pc.close(); //samsung destroy
+					pc = null;
+					}
+
+				//new_pc();
+				//PeerConnection();
+				//addLocalStream(localStream);
+				document.getElementById('btn_AudioOn').style.display='none';
+				document.getElementById('btn_AudioOff').style.display='none';
+				document.getElementById('btn_HangUp').style.display='none';
+				document.getElementById('btn_createOffer').style.display='inline-block';
+				
+				}
+		}
+	
+	if (message.type == "offer")
+	{
+			console.log('Offer is received:');
+			document.getElementById('debug').innerHTML += 'Offer is received:<br>';
+			//document.getElementById('logs').innerHTML="Offer is received";
+			document.getElementById('logs').innerHTML="Вам звонят";
+			document.getElementById('connection').innerHTML="";
+			
+			console.log(message);
+			if(pc){
+				pc.setRemoteDescription(new RTCSessionDescription(message));
+				console.log('setRemoteDescription');
+				console.log(message);
+				document.getElementById('debug').innerHTML += 'setRemoteDescription<br>';
+				
+				console.log('createAnswer');
+				document.getElementById('debug').innerHTML += 'createAnswer<br>';
+				pc.createAnswer
+				(function(desc)
+				{
+					pc.setLocalDescription(desc)
+					console.log('setLocalDescription');
+					console.log(desc);
+					document.getElementById('debug').innerHTML += 'setLocalDescription<br>';
+					socket.emit("message", desc);
+					//document.getElementById('logs').innerHTML="Answer is sended";
+
+				}, 
+				function(err)
+				{
+					console.error(err);
+					document.getElementById('debug').innerHTML += err + '<br>';
+				}
+			);
+			}
+	}
+
+	if (message.type == "answer")
+	{
+		if (pc){
+			pc.setRemoteDescription(new RTCSessionDescription(message));
+			console.log('setRemoteDescription');
+			console.log(message);
+			document.getElementById('debug').innerHTML += 'setRemoteDescription<br>';
+			//document.getElementById('logs').innerHTML="Aswer is received";
+
+			}
+	}
 
 
+	if (message.type == "candidate")
+	{
+			if (message.candidate)
+			{
+				console.log('IceCandidate is received:');
+				document.getElementById('debug').innerHTML += 'IceCandidate is received:<br>';
+				console.log(message.candidate);
+				if (pc) {
+					pc.addIceCandidate(new RTCIceCandidate(message.candidate));
+					console.log('new IceCandidate is added');
+					document.getElementById('debug').innerHTML += 'new IceCandidate is added<br>';
+					}
+			}
+	}
+	
+	if (message == "HangUp"){
+		console.log('HangUp is clicked by other side');
+		document.getElementById('logs').innerHTML = 'Другой абонент нажал Разъединить';
+		document.getElementById('connection').innerHTML = 'Соединение прервано';
+		
+		// Older browsers may not have srcObject
+		if ('srcObject' in remoteVideo) 
+			{
+				remoteVideo.srcObject = null;
+			} else 
+				{
+				 // Avoid using this in new browsers, as it is going away.
+				remoteVideo.src = null;
+				}			
+/*		
+		if (remoteVideo.srcObject) {
+			  remoteVideo.srcObject.getTracks().forEach(function(track){track.stop()});
+			  remoteVideo.srcObject = null;
+				}
+*/			
+		if (pc) {
+			pc.close();
+			pc = null;
+			}
+		//new_pc();
+		//PeerConnection();
+		//addLocalStream(localStream);
+		document.getElementById('btn_AudioOn').style.display='none';
+		document.getElementById('btn_AudioOff').style.display='none';
+		document.getElementById('btn_HangUp').style.display='none';
+		document.getElementById('btn_createOffer').style.display='inline-block';
+		}
+
+
+});
+
+
+socket.on('error', function(err)
+{
+	console.error(err);
+	document.getElementById('debug').innerHTML = err + '<br>';
+});
+
+  
+  
+  </script>
+
+
+  
 </body>
-
 </html>
