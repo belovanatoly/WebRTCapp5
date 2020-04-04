@@ -3,18 +3,15 @@
 <meta charset="utf-8">
 <title>user</title>
   <style>
-    body { text-align:center; background-color: #CCC;}
-	#Line_Number_Enter{ background-color:#FFF; width:300px; min-height:300px; border:1px solid black; padding:20px 40px; display:inline-block; }
-    video { width: 320px; height: 240px; border: 1px solid grey; margin-top:20px; display:none; }
-	#logs { margin-top:20px;}
-	#connection { }
-    #debug { text-align:left; border:1px solid grey; margin: 10px; padding:10px; height:100px; overflow:auto; display: none;   }
+    body { text-align:center;}
+    video { height: 240px; width: 320px; border: 1px solid grey; margin-top:20px; display:none; }
+	#logs { margin-top: 20px;}
+    #debug { text-align:left; margin-left:10px; display:none;   }
     button { display:none; }
-	label {}
+	#Line_Number_Enter{ display:none; border:1px solid black; padding:20px 40px;  }
 	input { text-align:center;}
-	#btn_Line_Number_Enter{  margin-top:20px; display:inline-block; }
+	#btn_Line_Number_Enter{ display:inline-block; margin-top:10px; }
 	p.left { text-align:left;}
-	p.error { color:red;}
 	
   </style>
   <script src="/socket.io/socket.io.js"></script>
@@ -23,13 +20,11 @@
 <body>
 
 
-<h1>GLOBALCOM</h1>
+<h1>GLOBAL.ONE</h1>
 
 <div id="Line_Number_Enter">
 <p><label for="inp_1">Введите номер линии:</label></p>
 <p><input type="text" id="inp_1" ></p>
-
-<p><label for="radio">Выберите тип соединения:</label></p>
 <p class='left'><input name="radio" type="radio" value="connection_type_1" >Только Аудио</p>
 <p class='left'><input name="radio" type="radio" value="connection_type_2">Только Видео</p>
 <p class='left'><input name="radio" type="radio" value="connection_type_3" checked >Аудио + Видео</p>
@@ -51,9 +46,11 @@
   <video id="remoteVideo"></video>
   <div id='logs'>&nbsp;</div>
   <div id='connection'>&nbsp;</div>
-  <div id='debug'>Console:</div>
+  <div id='debug'><br>Console:<br></div>
  
   <script type="text/javascript">
+
+console.log("begin");
 
 var socket = io.connect();
 
@@ -107,82 +104,57 @@ var RTCIceCandidate = (
 	msRTCIceCandidate
 );
 
-console.log("begin");
-document.getElementById('debug').innerHTML += '<br>begin<br>';
+document.getElementById('debug').innerHTML += 'begin<br>';
 
 console.log(navigator.userAgent);
 document.getElementById('debug').innerHTML += navigator.userAgent + '<br>';	  
   
 if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
-	console.log('mobile');
 	document.getElementById('debug').innerHTML += 'mobile<br>';
 	}
-		else {
-			console.log('desktop');
-			document.getElementById('debug').innerHTML += 'desktop<br>';
-			}
+	  else {document.getElementById('debug').innerHTML += 'desktop<br>';}
 
-if (!!navigator.getUserMedia){
-	console.log('Browser supports the WebRTC');
-	document.getElementById('debug').innerHTML += 'Browser supports the WebRTC <br>';
-	}
-		else {
-			console.error('Browser does not support the WebRTC');
-			document.getElementById('debug').innerHTML += '<p class=error>Browser does not support the WebRTC </p>';
-			}
+if (!!navigator.getUserMedia){document.getElementById('debug').innerHTML += 'browser supports the WebRTC <br>';}
+  else document.getElementById('debug').innerHTML += 'browser does not support the WebRTC <br>';
+
+
 		
 ///////////////////////////////////
 start();
+
+
+
+
 //////////////////////////////////
 
 function start (){
+	//document.getElementById('btn_go').style.display='inline-block';
+	//enterID_click();
 
-	// Открываем панель ввода идентификатора линии и кнопку вызова
-	// document.getElementById('Line_Number_Enter').style.display='inline-block';
-	
-	// Вытаскиваем на панель индентификатор линии
-	getParam_id();
-	
-	}
-	
-//////////////////////////////////
-
-// Функция берет идентефикатор линии из строки браузера 
-function getParam_id(){
-	
-	// Если в строке браузера есть id, то выводим на панель ввода идентификатора линии	
+	document.getElementById('Line_Number_Enter').style.display='inline-block';
+		
 	if (getParam('id')) {
-		//id = getParam('id');
-		document.getElementById('inp_1').value = getParam('id');
-		console.log('in browser Line is ' + id);
-		document.getElementById('debug').innerHTML += 'in browser Line is ' + id + '<br>';
+		id = getParam('id');
+		document.getElementById('inp_1').value = id;
 		}
+	
 	}
 
-	
-// функция возвращает значение параметра из строкки браузера
 function getParam(param){
 	return new URLSearchParams(window.location.search).get(param);
 	}
 
-// Функция задает номер линии и тип связи. Запускается при нажатии кнопки Вызов.
+
 function Line_Number_Enter(){
-	// Скрываем кнопку, чтобы не баловаться. Можно добавить прозрачность
-	document.getElementById('btn_Line_Number_Enter').style.display='none';
-	document.getElementById('Line_Number_Enter').style.opacity=0.5;
-	document.getElementById('logs').innerHTML='Для совершения звонка необходимо<br>разрешить доступ к устройствам<br>';
-	
-	console.log('Line_Number_Enter');
+	document.getElementById('Line_Number_Enter').style.display='none';
 	document.getElementById('debug').innerHTML += 'Line_Number_Enter<br>';
 
-	// задаем идентификатор линии
 	id = document.getElementById('inp_1').value;
 	console.log('Line is ' + id);
-	document.getElementById('debug').innerHTML += 'Line is ' + id + '<br>';
-	
-	// задаем тип соединения
 	connection_type = document.querySelector('input[name="radio"]:checked').value;
 	console.log('connection_type is ' + connection_type);
+	
+	document.getElementById('debug').innerHTML += 'Line is ' + id + '<br>';
 	document.getElementById('debug').innerHTML += 'connection_type is ' + connection_type + '<br>';
 	
 	if (connection_type == 'connection_type_1') {mediaConstraints = {audio: true, video: false}}
@@ -190,115 +162,99 @@ function Line_Number_Enter(){
 	if (connection_type == 'connection_type_3') {mediaConstraints = {audio: true, video: true}}
 	
 	console.log(mediaConstraints);
-	document.getElementById('debug').innerHTML += 'video: ' + mediaConstraints.video + ', audio: ' + mediaConstraints.audio + '<br>';
 	
-	// Если идентфикатор линии задан, то переходим к захвату медиапотока
 	if (id){
-	  console.log('to getUserMedia');
-	  document.getElementById('debug').innerHTML += 'to getUserMedia<br><br>';
-	  
-	  // Захват медиапотока
-	  navigator.getUserMedia( mediaConstraints, getUserMedia_success, getUserMedia_failed );
-		  } else {
-			  alert ('Необходимо указать номер линии');
-			  document.getElementById('Line_Number_Enter').style.opacity=1;
-			  document.getElementById('btn_Line_Number_Enter').style.display='inline-block';
-			  start();
-			  }
-	  }
-
-// Функция при успешном захвате потока
-function getUserMedia_success(stream){
-	
-		// скрываем панель ввода идентификатора линии
-		document.getElementById('Line_Number_Enter').style.display='none';
-
-		console.log("MediaStream is created");
-		console.log(stream);
-		document.getElementById('debug').innerHTML += 'MediaStream is created<br>';
-		 
-		// выводим разделы для показа видео 
-		if (connection_type == 'connection_type_2' || connection_type == 'connection_type_3') {
-			localVideo.style.display='inline-block';
-			remoteVideo.style.display='inline-block';
-			}
-			
-		// Устанавливаем автозапуск и отключаем mute
-		localVideo.autoplay = true;
-		localVideo.muted = true;
-		
-		// Размещаем медиапоток в соответствующем разделе	
-		// Older browsers may not have srcObject
-		if ('srcObject' in localVideo) { localVideo.srcObject = stream; } 
-			// Avoid using this in new browsers, as it is going away.
-			else { localVideo.src = URL.createObjectURL(stream); }			
-		
-		// Сохраняем медиапоток в глобальной переменной
-		localStream = stream;
-
-		console.log('Creating or joining room ' + id + '...');
-		document.getElementById('debug').innerHTML += 'Creating or joining room ' + id + '...<br><br>';
-		
-		// Отправляем на сервер идентификатор линии
-		socket.emit('room', id);
-		
-		// Начинаем соединение. Перенести в другое место, чтобы зря кандидатов не гонять
-		// if (line_status !== 'full') { connecting(); } else {}
-	
-	}
-
-// Функция при неуспешном захвате потока
-function getUserMedia_failed (err){
-	Error (err);
-	document.getElementById('logs').innerHTML = 'Доступ к устройствам не был разрешен пользователем<br>';
-	document.getElementById('logs').innerHTML += 'или устройства отсутствуют<br><br>';
-	document.getElementById('logs').innerHTML += 'Для совершения звонка необходимо разрешить доступ к устройствам<br>';
-	document.getElementById('logs').innerHTML += 'Попробуйте еще раз';
-	
-	document.getElementById('btn_Line_Number_Enter').style.display='inline-block';
-	document.getElementById('Line_Number_Enter').style.opacity=1;
-	
-	console.log('Media is not created');
-	document.getElementById('debug').innerHTML += '<p class=error>Media is not created</p>';
-	}
-
-//////////////////////////////////
-
-// Начинаем соединение. Переделать, чтобы просто так кандидатов не гонять	
-function pred_connecting(){	
-
-	// Добавляем кнопки	
-	document.getElementById('btn_AudioOn').style.display='inline-block';
-	document.getElementById('btn_AudioOff').style.display='inline-block';
-	document.getElementById('btn_HangUp').style.display='inline-block';
-	document.getElementById('btn_ref').style.display='inline-block';
-	//document.getElementById('connection').innerHTML = '';
-	
-	
-	// создаем объект RTCPeerConnection
-	creat_pc();
-	
-	// Прописываем обработчики
-	PeerConnection();
-	
-	// Добавляем медиапоток
-	addLocalStream(localStream);
-	
-
-	}
-
-//////////////////////////////////
-
-function creat_pc(){
-		pc = new RTCPeerConnection(servers);
-		if (pc){
-			console.log('pc is created');
-			document.getElementById('debug').innerHTML += 'pc is created<br>';
-			} else { 
-				console.error('pc is not created');
-				document.getElementById('debug').innerHTML += '<p class=red>pc is not created</p>';
-				}
+	document.getElementById('debug').innerHTML += 'to getUserMedia<br>';
+	navigator.getUserMedia(mediaConstraints, getUserMedia_success
+		,
+		function (err)
+		{
+			Error (err);
+			document.getElementById('logs').innerHTML += '<br>Media is not created';
 		}
+	);
+		} else {
+			alert ('Необходимо указать\nномер линии');
+			start();
+			}
+	}
+/*
+	if (id){	
+		navigator.mediaDevices.getUserMedia(mediaConstraints)
+		.then(getUserMedia_success)
+		.catch(function(err){
+			Error (err);
+			document.getElementById('logs').innerHTML += '<br>Media is not created';
+			//document.getElementById('btn_getUserMedia').style.display='inline-block';
+			});
+		} else {
+			alert ('Необходимо указать\nномер линии');
+			start();
+			}
+*/
+
+/*	  
+function go_click() 
+	{
+		document.getElementById('btn_go').style.display='none';
+		enterID();
+		
+		navigator.mediaDevices.getUserMedia(mediaConstraints)
+		.then(getUserMedia_success)
+//		.then (function()
+//			{
+//				document.getElementById('btn_createOffer').style.display='inline-block';
+//			})
+		.catch(function(err){
+			Error (err);
+	  		document.getElementById('logs').innerHTML += '<br>Media is not created';
+			//document.getElementById('btn_getUserMedia').style.display='inline-block';
+
+			});
+		
+	}
+*/
+
+
+/*
+function getUserMedia_click()
+	{
+		document.getElementById('logs').innerHTML="getUserMedia is clicked";
+		new_pc();
+		PeerConnection();
+		getUserMedia();
+	}
+*/
+
+/*
+function enterID() {
+	id = prompt('Наберите номер линии:');
+	}	
+*/	
+function getUserMedia_success(stream){
+	getStream(stream);
+		if (id !== '') 
+		{
+			console.log('Creating or joining room ' + id + '...');
+			document.getElementById('debug').innerHTML += 'Creating or joining room ' + id + '...<br>';
+			socket.emit('room', id);
+			
+		} 
+		
+	if (line_status !== 'full') {createOffer();}
+	}
+
+
+function new_pc()
+	{
+		pc = new RTCPeerConnection(servers);
+		if (pc) 
+			{
+				console.log('pc is created');
+				document.getElementById('debug').innerHTML += 'pc is created<br>';
+				console.log(pc);
+			}
+	}
 
 
 function PeerConnection()
@@ -355,33 +311,98 @@ function PeerConnection()
 				}
 			console.log('peer connection methods is done');	
 			document.getElementById('debug').innerHTML += 'peer connection methods is done<br>';
-			} else {
-				console.error('Error: pc is not created');
-				console.error('peer connection methods is not done');	
-				document.getElementById('debug').innerHTML += '<p class=error>Error: pc is not created</p>';
-				document.getElementById('debug').innerHTML += '<p class=error>peer connection methods is not done</p>';
+			} else 
+				{
+					console.log('Error: pc is not created.');
+					document.getElementById('debug').innerHTML += 'Error: pc is not created.<br>';
 				}
-				
+}
+
+/*
+function getUserMedia()
+	{
+	  //navigator.getUserMedia(mediaConstraints, gotStream, Error);
+	  	navigator.mediaDevices.getUserMedia(mediaConstraints)
+		.then(getStream)
+		.catch(Error);
+	}
+*/
+
+
+function getStream(stream)
+	{
+		console.log("MediaStream is created");
+		console.log(stream);
+		document.getElementById('debug').innerHTML += 'MediaStream is created<br>';
+		 
+		localVideo.autoplay = true;
+		localVideo.muted = true;
+		
+		if (connection_type == 'connection_type_2') {
+			localVideo.style.display='inline-block';
+			remoteVideo.style.display='inline-block';
+			}
+		if (connection_type == 'connection_type_3') {
+			localVideo.style.display='inline-block';
+			remoteVideo.style.display='inline-block';
+			}
+		
+		
+		// Older browsers may not have srcObject
+		if ('srcObject' in localVideo) 
+			{
+			  localVideo.srcObject = stream;
+			} else 
+			  {
+				  // Avoid using this in new browsers, as it is going away.
+				  localVideo.src = URL.createObjectURL(stream);
+				}			
+		localStream = stream;
 	}
 
-
-function addLocalStream(stream){
-	if (pc){
+function addLocalStream(stream)
+	{
 		//stream.getTracks().forEach(function(track) { pc.addTrack(track, stream) });
 		pc.addStream(localStream);
 		console.log("MediaStream is added");
 		//logs.innerHTML="MediaStream is added";
-		document.getElementById('debug').innerHTML += 'MediaStream is added<br><br>';
-			} else {
-				console.error('Error: pc is not created.');
-				console.error("MediaStream is not added");
-				document.getElementById('debug').innerHTML += '<p class=error>Error: pc is not created</p>';
-				document.getElementById('debug').innerHTML += '<p class=error>MediaStream is not added</p>';
-				}
+		document.getElementById('debug').innerHTML += 'MediaStream is added<br>';
+	
 	}
 
-function createOffer(){			
+
+function Error(err)
+	{
+		console.error(err);
+		document.getElementById('debug').innerHTML += err + '<br>';
+	}
+
+
+
+function createOffer(){	
+	document.getElementById('btn_createOffer').style.display='none';
+	
+	
+	if (connection_type == 'connection_type_1') {
+		document.getElementById('btn_AudioOn').style.display='inline-block';
+		document.getElementById('btn_AudioOff').style.display='inline-block';
+		}
+		if (connection_type == 'connection_type_3') {
+		document.getElementById('btn_AudioOn').style.display='inline-block';
+		document.getElementById('btn_AudioOff').style.display='inline-block';
+		}
+	
+	document.getElementById('btn_HangUp').style.display='inline-block';
+	document.getElementById('btn_ref').style.display='inline-block';
+	document.getElementById('connection').innerHTML = '';
+	
+	document.getElementById('logs').innerHTML = 'Вы нажали Соединить';
+	document.getElementById('connection').innerHTML = 'Соединяем...';
+	
+	new_pc();
 	if (pc)	{
+			PeerConnection();
+			addLocalStream(localStream);
 			
 			pc.createOffer(
 				function(desc)
@@ -391,7 +412,7 @@ function createOffer(){
 					pc.setLocalDescription(desc);
 					console.log('setLocalDescription');
 					document.getElementById('debug').innerHTML += 'setLocalDescription<br>';
-					console.log(desc.sdp);
+					console.log(desc);
 					socket.emit("message", desc);
 				},
 				function(err)
@@ -404,28 +425,13 @@ function createOffer(){
 			document.getElementById('debug').innerHTML += 'Offer is sended<br>';
 			}
 			else {
-				console.error('Error: pc is not created. please creat pc.');
-				document.getElementById('debug').innerHTML += '<p class=error>Error: pc is not created. please creat pc.</p>';
+				console.log('error: pc is not created. please creat pc.');
+				document.getElementById('debug').innerHTML += 'error: pc is not created. please creat pc.<br>';
 				}
 	}
 
-
-function Error(err){
-	console.error(err);
-	document.getElementById('debug').innerHTML += '<p class=error>' + err + '</p>';
-	}
-
-//////////////////////////////////
-
-
 function createOffer_click(){
-	document.getElementById('btn_createOffer').style.display='none';
-	document.getElementById('logs').innerHTML = '&nbsp';
-	document.getElementById('connection').innerHTML = 'Соединяем...';
-	pred_connecting();
-	
-	createOffer();
-	// Теперь сделать так, чтобы оффер два раза не делать
+	createOffer()
 	}
 
 
@@ -443,6 +449,12 @@ function HangUp_click(){
 			remoteVideo.src = null;
 			}			
 	
+/*	
+	if (remoteVideo.srcObject) {
+		  remoteVideo.srcObject.getTracks().forEach(function(track){track.stop()});
+		  remoteVideo.srcObject = null;
+			}
+*/		
 		pc.close();
 		pc = null;
 		socket.emit('message','HangUp');
@@ -470,11 +482,10 @@ function ref_click(){
 
 
 ///////////////////
-
 socket.on('success', function ()
 {
 	console.log("socket.on connected");
-	document.getElementById('debug').innerHTML += 'socket.on connected<br><br>';
+	document.getElementById('debug').innerHTML += 'socket.on connected<br>';
 	
 });
 
@@ -491,24 +502,18 @@ socket.on('message', function(message)
 		if (message.value == 'created'){
 			document.getElementById('logs').innerHTML = 'Вы подключены к линии ' + message.room;
 			document.getElementById('connection').innerHTML = 'Другой абонент еще не на линии';
-			line_status = 'created';
-			pred_connecting();
 			}
 		if (message.value == 'joined'){
 			document.getElementById('logs').innerHTML = 'Вы подключены к линии ' + message.room ;
 			document.getElementById('connection').innerHTML = 'Соединяем...';
-			line_status = 'joined';
-			pred_connecting();
-			createOffer();
-			
 			}
 		if (message.value == 'A second user is added'){
-			document.getElementById('logs').innerHTML = 'К линии ' + message.room + ' поключился другой абонент.';
+			document.getElementById('logs').innerHTML = 'К линии ' + message.room + 'Поключился другой абонент.';
 			document.getElementById('connection').innerHTML = 'Соединяем...';
 			}
 		if (message.value == 'full'){
 			document.getElementById('logs').innerHTML = 'На линии ' + message.room + ' уже два абонента';
-			document.getElementById('connection').innerHTML = 'Линия ' + message.room + 'занята, попробуйте позже';
+			document.getElementById('connection').innerHTML = 'Линия занята, попробуйте позже';
 			line_status = 'full';
 			}
 
@@ -527,11 +532,21 @@ socket.on('message', function(message)
 				}			
 
 
+/*			
+			if (remoteVideo.srcObject) {
+				  remoteVideo.srcObject.getTracks().forEach(function(track){track.stop()});
+				  remoteVideo.srcObject = null;
+					}
+*/				
+
 				if (pc) {
 					pc.close(); //samsung destroy
 					pc = null;
 					}
 
+				//new_pc();
+				//PeerConnection();
+				//addLocalStream(localStream);
 				document.getElementById('btn_AudioOn').style.display='none';
 				document.getElementById('btn_AudioOff').style.display='none';
 				document.getElementById('btn_HangUp').style.display='none';
@@ -552,7 +567,7 @@ socket.on('message', function(message)
 			if(pc){
 				pc.setRemoteDescription(new RTCSessionDescription(message));
 				console.log('setRemoteDescription');
-				console.log(message.sdp);
+				console.log(message);
 				document.getElementById('debug').innerHTML += 'setRemoteDescription<br>';
 				
 				console.log('createAnswer');
@@ -562,7 +577,7 @@ socket.on('message', function(message)
 				{
 					pc.setLocalDescription(desc)
 					console.log('setLocalDescription');
-					console.log(desc.sdp);
+					console.log(desc);
 					document.getElementById('debug').innerHTML += 'setLocalDescription<br>';
 					socket.emit("message", desc);
 					//document.getElementById('logs').innerHTML="Answer is sended";
@@ -582,7 +597,7 @@ socket.on('message', function(message)
 		if (pc){
 			pc.setRemoteDescription(new RTCSessionDescription(message));
 			console.log('setRemoteDescription');
-			console.log(message.sdp);
+			console.log(message);
 			document.getElementById('debug').innerHTML += 'setRemoteDescription<br>';
 			//document.getElementById('logs').innerHTML="Aswer is received";
 
@@ -645,7 +660,7 @@ socket.on('message', function(message)
 socket.on('error', function(err)
 {
 	console.error(err);
-	document.getElementById('debug').innerHTML += err + '<br>';
+	document.getElementById('debug').innerHTML = err + '<br>';
 });
 
   

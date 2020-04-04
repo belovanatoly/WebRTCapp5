@@ -8,7 +8,7 @@
     video { width: 320px; height: 240px; border: 1px solid grey; margin-top:20px; display:none; }
 	#logs { margin-top:20px;}
 	#connection { }
-    #debug { text-align:left; display: inline-block; border:1px solid grey; margin: 10px; padding:10px; height:100px; overflow:auto;   }
+    #debug { text-align:left; border:1px solid grey; margin: 10px; padding:10px; height:100px; overflow:auto; display: none;   }
     button { display:none; }
 	label {}
 	input { text-align:center;}
@@ -23,7 +23,7 @@
 <body>
 
 
-<h1>GLOBAL.ONE</h1>
+<h1>GLOBALCOM</h1>
 
 <div id="Line_Number_Enter">
 <p><label for="inp_1">Введите номер линии:</label></p>
@@ -69,7 +69,7 @@ var connection_type;
 var line_status;
 
 var pc = null;
-// var servers = null;
+//var servers = null;
 
 
 var servers = {"iceServers": 
@@ -141,7 +141,7 @@ function start (){
 	// document.getElementById('Line_Number_Enter').style.display='inline-block';
 	
 	// Вытаскиваем на панель индентификатор линии
-	//getParam_id();
+	// getParam_id();
 	
 	}
 	
@@ -160,7 +160,7 @@ function getParam_id(){
 	}
 
 	
-// функция возвращает значение параметра из строкки боаузера
+// функция возвращает значение параметра из строкки браузера
 function getParam(param){
 	return new URLSearchParams(window.location.search).get(param);
 	}
@@ -243,7 +243,7 @@ function getUserMedia_success(stream){
 		socket.emit('room', id);
 		
 		// Начинаем соединение. Перенести в другое место, чтобы зря кандидатов не гонять
-		if (line_status !== 'full') { connecting(); } else {}
+		// if (line_status !== 'full') { connecting(); } else {}
 	
 	}
 
@@ -265,18 +265,15 @@ function getUserMedia_failed (err){
 //////////////////////////////////
 
 // Начинаем соединение. Переделать, чтобы просто так кандидатов не гонять	
-function connecting(){	
+function pred_connecting(){	
 
 	// Добавляем кнопки	
 	document.getElementById('btn_AudioOn').style.display='inline-block';
 	document.getElementById('btn_AudioOff').style.display='inline-block';
 	document.getElementById('btn_HangUp').style.display='inline-block';
 	document.getElementById('btn_ref').style.display='inline-block';
-	document.getElementById('connection').innerHTML = '';
+	//document.getElementById('connection').innerHTML = '';
 	
-	// Создаем надпись 
-	document.getElementById('logs').innerHTML = '&nbsp';
-	document.getElementById('connection').innerHTML = 'Соединяем...';
 	
 	// создаем объект RTCPeerConnection
 	creat_pc();
@@ -287,8 +284,6 @@ function connecting(){
 	// Добавляем медиапоток
 	addLocalStream(localStream);
 	
-	// Создаем оффер
-	creatOffer();
 
 	}
 
@@ -385,7 +380,7 @@ function addLocalStream(stream){
 				}
 	}
 
-function creatOffer(){			
+function createOffer(){			
 	if (pc)	{
 			
 			pc.createOffer(
@@ -425,7 +420,12 @@ function Error(err){
 
 function createOffer_click(){
 	document.getElementById('btn_createOffer').style.display='none';
-	connecting();
+	document.getElementById('logs').innerHTML = '&nbsp';
+	document.getElementById('connection').innerHTML = 'Соединяем...';
+	pred_connecting();
+	
+	createOffer();
+	// Теперь сделать так, чтобы оффер два раза не делать
 	}
 
 
@@ -443,13 +443,7 @@ function HangUp_click(){
 			remoteVideo.src = null;
 			}			
 	
-/*	
-	if (remoteVideo.srcObject) {
-		  remoteVideo.srcObject.getTracks().forEach(function(track){track.stop()});
-		  remoteVideo.srcObject = null;
-			}
-*/		
-		pc.close();
+		// pc.close();
 		pc = null;
 		socket.emit('message','HangUp');
 		document.getElementById('btn_AudioOn').style.display='none';
@@ -497,10 +491,16 @@ socket.on('message', function(message)
 		if (message.value == 'created'){
 			document.getElementById('logs').innerHTML = 'Вы подключены к линии ' + message.room;
 			document.getElementById('connection').innerHTML = 'Другой абонент еще не на линии';
+			line_status = 'created';
+			pred_connecting();
 			}
 		if (message.value == 'joined'){
 			document.getElementById('logs').innerHTML = 'Вы подключены к линии ' + message.room ;
 			document.getElementById('connection').innerHTML = 'Соединяем...';
+			line_status = 'joined';
+			pred_connecting();
+			createOffer();
+			
 			}
 		if (message.value == 'A second user is added'){
 			document.getElementById('logs').innerHTML = 'К линии ' + message.room + ' поключился другой абонент.';
@@ -508,7 +508,7 @@ socket.on('message', function(message)
 			}
 		if (message.value == 'full'){
 			document.getElementById('logs').innerHTML = 'На линии ' + message.room + ' уже два абонента';
-			document.getElementById('connection').innerHTML = 'Линия занята, попробуйте позже';
+			document.getElementById('connection').innerHTML = 'Линия ' + message.room + 'занята, попробуйте позже';
 			line_status = 'full';
 			}
 
@@ -527,21 +527,11 @@ socket.on('message', function(message)
 				}			
 
 
-/*			
-			if (remoteVideo.srcObject) {
-				  remoteVideo.srcObject.getTracks().forEach(function(track){track.stop()});
-				  remoteVideo.srcObject = null;
-					}
-*/				
-
 				if (pc) {
-					pc.close(); //samsung destroy
+					//pc.close(); //samsung destroy
 					pc = null;
 					}
 
-				//new_pc();
-				//PeerConnection();
-				//addLocalStream(localStream);
 				document.getElementById('btn_AudioOn').style.display='none';
 				document.getElementById('btn_AudioOff').style.display='none';
 				document.getElementById('btn_HangUp').style.display='none';
@@ -636,7 +626,7 @@ socket.on('message', function(message)
 				}
 */			
 		if (pc) {
-			pc.close();
+			//pc.close();
 			pc = null;
 			}
 		//new_pc();
